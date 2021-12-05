@@ -14,7 +14,7 @@
 				"${fileDirname}/${fileBasenameNoExtension}.out",
 				"-I/home/ysouyno/gits/glfw/include",
 				"-I/home/ysouyno/usr/glad/include",
-				"-I/home/ysouyno/usr/glm/glm",
+				"-I/home/ysouyno/usr/glm-0.9.8.5",
 				"-I/home/ysouyno/gits/stb",
 				"-L/home/ysouyno/gits/glfw/build/src",
 				"-lglfw3",

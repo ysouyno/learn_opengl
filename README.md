@@ -6,9 +6,19 @@
 
 分别用到了`glfw`，`stb`，`glm`和`glad`，其中`glfw`和`stb`直接从`github`上克隆最新代码：
 
+``` shellsession
+$ git clone https://github.com/glfw/glfw.git
+$ git clone https://github.com/nothings/stb.git
 ```
-git clone https://github.com/glfw/glfw.git
-git clone https://github.com/nothings/stb.git
+
+其中`glfw`需要编译一下才能使用，很简单：
+
+``` shellsession
+$ cd glfw
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
 ```
 
 `glm`是按照教程中的建议，选择了低于`0.9.9`的版本，下载地址：“[GLM 0.9.8.5](https://github.com/g-truc/glm/releases/tag/0.9.8.5)”。
