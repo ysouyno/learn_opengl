@@ -19,6 +19,9 @@ glm::vec3 camera_pos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 camera_front = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 camera_up = glm::vec3(0.0f, 1.0f, 0.0f);
 
+float delta_time = 0.0f; // time between current frame and last frame
+float last_frame = 0.0f;
+
 int main() {
   // glfw: initialize and configure
   glfwInit();
@@ -162,6 +165,10 @@ int main() {
 
   // render loop
   while (!glfwWindowShouldClose(window)) {
+    float current_frame = glfwGetTime();
+    delta_time = current_frame - last_frame;
+    last_frame = current_frame;
+
     // input
     process_input(window);
 
@@ -214,7 +221,7 @@ void process_input(GLFWwindow *window) {
       glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
     glfwSetWindowShouldClose(window, true);
 
-  float camera_speed = 0.05f;
+  float camera_speed = 2.5 * delta_time;
   if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     camera_pos += camera_speed * camera_front;
   if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
