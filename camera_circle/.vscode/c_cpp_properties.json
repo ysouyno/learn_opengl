@@ -1,0 +1,20 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/home/ysouyno/gits/glfw/include",
+                "/home/ysouyno/usr/glad/include",
+                "/home/ysouyno/usr/glm-0.9.8.5/glm",
+                "/home/ysouyno/gits/stb"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c17",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "linux-clang-x64"
+        }
+    ],
+    "version": 4
+}

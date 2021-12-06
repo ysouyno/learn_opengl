@@ -1,0 +1,38 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "C/C++: g++ build active file",
+			"command": "/usr/bin/g++",
+			"args": [
+				"-fdiagnostics-color=always",
+				"-g",
+				"${file}",
+				"${workspaceFolder}/*.c",
+				"-o",
+				"${fileDirname}/${fileBasenameNoExtension}.out",
+				"-I/home/ysouyno/gits/glfw/include",
+				"-I/home/ysouyno/usr/glad/include",
+				"-I/home/ysouyno/usr/glm-0.9.8.5",
+				"-I/home/ysouyno/gits/stb",
+				"-L/home/ysouyno/gits/glfw/build/src",
+				"-lglfw3",
+				"-lpthread",
+				"-ldl",
+				"-lGL"
+			],
+			"options": {
+				"cwd": "${fileDirname}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"detail": "compiler: /usr/bin/g++"
+		}
+	]
+}
