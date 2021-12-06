@@ -42,7 +42,7 @@ int main() {
     return -1;
   }
 
-  Shader our_shader("coordinate_systems.vs", "coordinate_systems.fs");
+  Shader our_shader("camera_circle.vs", "camera_circle.fs");
   glEnable(GL_DEPTH_TEST);
 
   float vertices[] = {
@@ -152,6 +152,10 @@ int main() {
   our_shader.set_int("texture1", 0);
   our_shader.set_int("texture2", 1);
 
+  glm::mat4 projection = glm::perspective(
+      glm::radians(45.0f), (float)SCR_W / (float)SCR_H, 0.1f, 100.0f);
+  our_shader.set_mat4("projection", projection);
+
   // render loop
   while (!glfwWindowShouldClose(window)) {
     // input
@@ -168,21 +172,20 @@ int main() {
     our_shader.use();
 
     glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 projection = glm::mat4(1.0f);
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-    projection = glm::perspective(glm::radians(45.0f),
-                                  (float)SCR_W / (float)SCR_H, 1.0f, 100.0f);
-
-    our_shader.set_mat4("projection", projection);
+    float radius = 10.0f;
+    float camx = sin(glfwGetTime() * radius) * 10;
+    float camz = cos(glfwGetTime() * radius) * 10;
+    view = glm::lookAt(glm::vec3(camx, 0.0f, camz), glm::vec3(0.0f, 0.0f, 0.0f),
+                       glm::vec3(0.0f, 1.0f, 0.0f));
     our_shader.set_mat4("view", view);
 
     glBindVertexArray(VAO);
     for (unsigned int i = 0; i < 10; ++i) {
       glm::mat4 model = glm::mat4(1.0f);
       model = glm::translate(model, cube_positions[i]);
-      float angle = 20.0f * (i + 1);
-      model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle),
-                          glm::vec3(1.0f, 0.3f, 0.5f));
+      float angle = 20.0f * i;
+      model =
+          glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
       our_shader.set_mat4("model", model);
 
       glDrawArrays(GL_TRIANGLES, 0, 36);
