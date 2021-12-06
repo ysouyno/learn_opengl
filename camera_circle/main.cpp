@@ -15,6 +15,10 @@ void process_input(GLFWwindow *window);
 const unsigned int SCR_W = 600;
 const unsigned int SCR_H = 400;
 
+glm::vec3 camera_pos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 camera_front = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 camera_up = glm::vec3(0.0f, 1.0f, 0.0f);
+
 int main() {
   // glfw: initialize and configure
   glfwInit();
@@ -175,8 +179,9 @@ int main() {
     float radius = 10.0f;
     float camx = sin(glfwGetTime() * radius) * 10;
     float camz = cos(glfwGetTime() * radius) * 10;
-    view = glm::lookAt(glm::vec3(camx, 0.0f, camz), glm::vec3(0.0f, 0.0f, 0.0f),
-                       glm::vec3(0.0f, 1.0f, 0.0f));
+    /* view = glm::lookAt(glm::vec3(camx, 0.0f, camz), glm::vec3(0.0f, 0.0f,
+       0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); */
+    view = glm::lookAt(camera_pos, camera_pos + camera_front, camera_up);
     our_shader.set_mat4("view", view);
 
     glBindVertexArray(VAO);
@@ -208,6 +213,18 @@ void process_input(GLFWwindow *window) {
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS ||
       glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
     glfwSetWindowShouldClose(window, true);
+
+  float camera_speed = 0.05f;
+  if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    camera_pos += camera_speed * camera_front;
+  if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    camera_pos -= camera_speed * camera_front;
+  if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    camera_pos -=
+        glm::normalize(glm::cross(camera_front, camera_up)) * camera_speed;
+  if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    camera_pos +=
+        glm::normalize(glm::cross(camera_front, camera_up)) * camera_speed;
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback
