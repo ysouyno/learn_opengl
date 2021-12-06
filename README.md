@@ -27,7 +27,13 @@ $ make
 
 ## 编译
 
-编译及链接选项参考项目的`.vscode`中的文件。
+编译及链接选项参考项目的`.vscode`中的文件。另因为使用`clang-format`格式化代码，头文件的顺序会影响编译，所以我在`~/.clang-format`中关闭了这项功能。
+
+``` shellsession
+$ cat ~/.clang-format
+Language: Cpp
+SortIncludes: false
+```
 
 ## 其它
 
