@@ -11,6 +11,7 @@
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void process_input(GLFWwindow *window);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
+void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 
 // settings
 const unsigned int SCR_W = 600;
@@ -52,6 +53,7 @@ int main() {
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
   glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   glfwSetCursorPosCallback(window, mouse_callback);
+  glfwSetScrollCallback(window, scroll_callback);
 
   // glad: load all OpenGL function pointers
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -169,10 +171,6 @@ int main() {
   our_shader.set_int("texture1", 0);
   our_shader.set_int("texture2", 1);
 
-  glm::mat4 projection = glm::perspective(
-      glm::radians(45.0f), (float)SCR_W / (float)SCR_H, 0.1f, 100.0f);
-  our_shader.set_mat4("projection", projection);
-
   // render loop
   while (!glfwWindowShouldClose(window)) {
     float current_frame = glfwGetTime();
@@ -191,6 +189,10 @@ int main() {
     glBindTexture(GL_TEXTURE_2D, texture2);
 
     our_shader.use();
+
+    glm::mat4 projection = glm::perspective(
+        glm::radians(fov), (float)SCR_W / (float)SCR_H, 0.1f, 100.0f);
+    our_shader.set_mat4("projection", projection);
 
     glm::mat4 view = glm::mat4(1.0f);
     float radius = 10.0f;
@@ -281,4 +283,12 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
   front.y = sin(glm::radians(pitch));
   front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
   camera_front = glm::normalize(front);
+}
+
+void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
+  fov -= yoffset;
+  if (fov < 1.0f)
+    fov = 1.0f;
+  if (fov > 45.0f)
+    fov = 45.0f;
 }
