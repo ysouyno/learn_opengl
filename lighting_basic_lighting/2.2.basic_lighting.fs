@@ -7,6 +7,7 @@ in vec3 FragPos;
 uniform vec3 objectColor;
 uniform vec3 lightColor;
 uniform vec3 lightPos;
+uniform vec3 viewPos;
 
 void main()
 {
@@ -21,9 +22,21 @@ void main()
   vec3 lightDir = normalize(lightPos - FragPos);
 
   // 将法向量和方向向量进行点乘，会得到它们之前夹角的余弦值
+  // 角度越大，余弦值越小
   float diff = max(dot(norm, lightDir), 0.0);
   vec3 diffuse = diff * lightColor;
 
-  vec3 result = (ambient + diffuse) * objectColor;
+  // specular
+  float specularStrength = 0.5;
+  // FragPos 即光线入射点，viewDir 相当于光线入射方向
+  vec3 viewDir = normalize(viewPos - FragPos);
+  // reflectDir 即光线的反射方向
+  vec3 reflectDir = reflect(-lightDir, norm);
+  // 将观察向量和反射向量进行点乘，会得到它们之前夹角的余弦值
+  // 32 表示反光度（Shininess）
+  float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+  vec3 specular = specularStrength * spec * lightColor;
+
+  vec3 result = (ambient + diffuse + specular) * objectColor;
   FragColor = vec4(result, 1.0);
 }
