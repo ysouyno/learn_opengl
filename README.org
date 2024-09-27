@@ -15,7 +15,7 @@
 
 教程链接：“[[https://learnopengl-cn.github.io/][LearnOpenGL CN]]”。
 
-* ~linux~ 平台环境配置
+* 环境配置（ ~linux~ ）
 
 ** ~archlinux~ 环境配置
 
@@ -50,7 +50,7 @@ Language: Cpp
 SortIncludes: false
 #+end_src
 
-* ~windows~ 平台环境配置
+* 环境配置（ ~windows~ ）
 
 ** ~vs2010~
 
@@ -58,9 +58,7 @@ SortIncludes: false
 2. 创建 ~third_party~ 目录。
 3. 下载预编译好的“[[https://github.com/glfw/glfw/releases/download/3.3.5/glfw-3.3.5.bin.WIN32.zip][glfw-3.3.5.bin.WIN32.zip]]”。
 
-* 其它
-
-** “坐标系统”中代码说明
+* 入门-坐标系统
 
 在“坐标系统”的“更多立方体”中提供的代码，文章中提到这十个立方体都能自主旋转，其实不然。我稍微修改了他的代码实现了，见：“[[https://github.com/ysouyno/learn_opengl/commit/b49247b5f9e1dd5e5b92809fe2235b948185767a][more cubes]]”，主要是这两处修改：
 
@@ -71,3 +69,39 @@ SortIncludes: false
 #+end_src
 
 原代码中 ~angle = 20.0f * i~ 会导致最中间的那个立方体不旋转。
+
+* 光照-基础光照
+
+背后的数学知道可能需要回顾，代码中的注释说明了一切：
+
+#+begin_src glsl
+  #version 330 core
+  out vec4 FragColor;
+
+  in vec3 Normal;
+  in vec3 FragPos;
+
+  uniform vec3 objectColor;
+  uniform vec3 lightColor;
+  uniform vec3 lightPos;
+
+  void main()
+  {
+    // amibent
+    float ambientStrength = 0.1;
+    vec3 ambient = ambientStrength * lightColor;
+
+    // diffuse
+    // 因为只关心方向向量的方向，所以这里先进行标准化，即 normalize
+    // norm 是书中所说的法向量，垂直于立面体表面
+    vec3 norm = normalize(Normal);
+    vec3 lightDir = normalize(lightPos - FragPos);
+
+    // 将法向量和方向向量进行点乘，会得到它们之前夹角的余弦值
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diff * lightColor;
+
+    vec3 result = (ambient + diffuse) * objectColor;
+    FragColor = vec4(result, 1.0);
+  }
+#+end_src
