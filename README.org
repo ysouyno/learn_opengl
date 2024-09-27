@@ -15,7 +15,7 @@
 
 教程链接：“[[https://learnopengl-cn.github.io/][LearnOpenGL CN]]”。
 
-* 环境配置（ ~linux~ ）
+* <2021-12-05 周日> 环境配置（ ~linux~ ）
 
 ** ~archlinux~ 环境配置
 
@@ -50,7 +50,7 @@ Language: Cpp
 SortIncludes: false
 #+end_src
 
-* 环境配置（ ~windows~ ）
+* <2024-09-27 周五> 环境配置（ ~windows~ ）
 
 ** ~vs2010~
 
@@ -58,7 +58,7 @@ SortIncludes: false
 2. 创建 ~third_party~ 目录。
 3. 下载预编译好的“[[https://github.com/glfw/glfw/releases/download/3.3.5/glfw-3.3.5.bin.WIN32.zip][glfw-3.3.5.bin.WIN32.zip]]”。
 
-* 入门-坐标系统
+* <2021-12-06 周一> 入门-坐标系统
 
 在“坐标系统”的“更多立方体”中提供的代码，文章中提到这十个立方体都能自主旋转，其实不然。我稍微修改了他的代码实现了，见：“[[https://github.com/ysouyno/learn_opengl/commit/b49247b5f9e1dd5e5b92809fe2235b948185767a][more cubes]]”，主要是这两处修改：
 
@@ -70,7 +70,7 @@ SortIncludes: false
 
 原代码中 ~angle = 20.0f * i~ 会导致最中间的那个立方体不旋转。
 
-* 光照-基础光照
+* <2024-09-27 周五> 光照-基础光照
 
 背后的数学知道可能需要回顾，代码中的注释说明了一切：
 
