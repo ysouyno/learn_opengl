@@ -23,6 +23,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\common\camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\common\shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>

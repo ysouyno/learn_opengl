@@ -4,14 +4,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
-#include "shader.h"
+#include "../common/shader.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-void framebuffer_size_callback(GLFWwindow *window, int width, int height);
-void process_input(GLFWwindow *window);
-void mouse_callback(GLFWwindow *window, double xpos, double ypos);
-void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void process_input(GLFWwindow* window);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 // settings
 const unsigned int SCR_W = 600;
@@ -43,7 +43,7 @@ int main() {
 #endif
 
   // glfw window creation
-  GLFWwindow *window = glfwCreateWindow(SCR_W, SCR_H, "t_gl", NULL, NULL);
+  GLFWwindow* window = glfwCreateWindow(SCR_W, SCR_H, "t_gl", NULL, NULL);
   if (window == NULL) {
     std::cout << "Failed to create GLFW window\n";
     glfwTerminate();
@@ -65,48 +65,48 @@ int main() {
   glEnable(GL_DEPTH_TEST);
 
   float vertices[] = {
-      // positions         // texture coords
-      -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom left
-      0.5f,  -0.5f, -0.5f, 1.0f, 0.0f, // bottom right
-      0.5f,  0.5f,  -0.5f, 1.0f, 1.0f, // top right
-      0.5f,  0.5f,  -0.5f, 1.0f, 1.0f, // top right
-      -0.5f, 0.5f,  -0.5f, 0.0f, 1.0f, // top left
-      -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom left
+    // positions         // texture coords
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom left
+    0.5f,  -0.5f, -0.5f, 1.0f, 0.0f, // bottom right
+    0.5f,  0.5f,  -0.5f, 1.0f, 1.0f, // top right
+    0.5f,  0.5f,  -0.5f, 1.0f, 1.0f, // top right
+    -0.5f, 0.5f,  -0.5f, 0.0f, 1.0f, // top left
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // bottom left
 
-      -0.5f, -0.5f, 0.5f,  0.0f, 0.0f, // bottom left
-      0.5f,  -0.5f, 0.5f,  1.0f, 0.0f, // bottom right
-      0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top right
-      0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top right
-      -0.5f, 0.5f,  0.5f,  0.0f, 1.0f, // top left
-      -0.5f, -0.5f, 0.5f,  0.0f, 0.0f, // bottom left
+    -0.5f, -0.5f, 0.5f,  0.0f, 0.0f, // bottom left
+    0.5f,  -0.5f, 0.5f,  1.0f, 0.0f, // bottom right
+    0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top right
+    0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top right
+    -0.5f, 0.5f,  0.5f,  0.0f, 1.0f, // top left
+    -0.5f, -0.5f, 0.5f,  0.0f, 0.0f, // bottom left
 
-      -0.5f, 0.5f,  0.5f,  1.0f, 0.0f, // bottom right
-      -0.5f, 0.5f,  -0.5f, 1.0f, 1.0f, // top right
-      -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // top left
-      -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // top left
-      -0.5f, -0.5f, 0.5f,  0.0f, 0.0f, // bottom left
-      -0.5f, 0.5f,  0.5f,  1.0f, 0.0f, // bottom right
+    -0.5f, 0.5f,  0.5f,  1.0f, 0.0f, // bottom right
+    -0.5f, 0.5f,  -0.5f, 1.0f, 1.0f, // top right
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // top left
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // top left
+    -0.5f, -0.5f, 0.5f,  0.0f, 0.0f, // bottom left
+    -0.5f, 0.5f,  0.5f,  1.0f, 0.0f, // bottom right
 
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom right
-      0.5f,  0.5f,  -0.5f, 1.0f, 1.0f, // top right
-      0.5f,  -0.5f, -0.5f, 0.0f, 1.0f, // top left
-      0.5f,  -0.5f, -0.5f, 0.0f, 1.0f, // top left
-      0.5f,  -0.5f, 0.5f,  0.0f, 0.0f, // bottom left
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom right
+    0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom right
+    0.5f,  0.5f,  -0.5f, 1.0f, 1.0f, // top right
+    0.5f,  -0.5f, -0.5f, 0.0f, 1.0f, // top left
+    0.5f,  -0.5f, -0.5f, 0.0f, 1.0f, // top left
+    0.5f,  -0.5f, 0.5f,  0.0f, 0.0f, // bottom left
+    0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom right
 
-      -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // top left
-      0.5f,  -0.5f, -0.5f, 1.0f, 1.0f, // top right
-      0.5f,  -0.5f, 0.5f,  1.0f, 0.0f, // bottom right
-      0.5f,  -0.5f, 0.5f,  1.0f, 0.0f, // bottom right
-      -0.5f, -0.5f, 0.5f,  0.0f, 0.0f, // bottom left
-      -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // top left
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // top left
+    0.5f,  -0.5f, -0.5f, 1.0f, 1.0f, // top right
+    0.5f,  -0.5f, 0.5f,  1.0f, 0.0f, // bottom right
+    0.5f,  -0.5f, 0.5f,  1.0f, 0.0f, // bottom right
+    -0.5f, -0.5f, 0.5f,  0.0f, 0.0f, // bottom left
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // top left
 
-      -0.5f, 0.5f,  -0.5f, 0.0f, 1.0f, // top left
-      0.5f,  0.5f,  -0.5f, 1.0f, 1.0f, // top right
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom right
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom right
-      -0.5f, 0.5f,  0.5f,  0.0f, 0.0f, // bottom left
-      -0.5f, 0.5f,  -0.5f, 0.0f, 1.0f  // top left
+    -0.5f, 0.5f,  -0.5f, 0.0f, 1.0f, // top left
+    0.5f,  0.5f,  -0.5f, 1.0f, 1.0f, // top right
+    0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom right
+    0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom right
+    -0.5f, 0.5f,  0.5f,  0.0f, 0.0f, // bottom left
+    -0.5f, 0.5f,  -0.5f, 0.0f, 1.0f  // top left
   };
 
   glm::vec3 cube_positions[] = {
@@ -114,7 +114,7 @@ int main() {
       glm::vec3(-1.5f, -2.2f, -2.5f), glm::vec3(-3.8f, -2.0f, -12.3f),
       glm::vec3(2.4f, -0.4f, -3.5f),  glm::vec3(-1.7f, 3.0f, -7.5f),
       glm::vec3(1.3f, -2.0f, -2.5f),  glm::vec3(1.5f, 2.0f, -2.5f),
-      glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f)};
+      glm::vec3(1.5f, 0.2f, -1.5f),   glm::vec3(-1.3f, 1.0f, -1.5f) };
 
   unsigned int VAO, VBO;
   glGenVertexArrays(1, &VAO);
@@ -125,10 +125,10 @@ int main() {
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
-                        (void *)(3 * sizeof(float)));
+    (void*)(3 * sizeof(float)));
   glEnableVertexAttribArray(1);
 
   unsigned int texture1, texture2;
@@ -141,12 +141,13 @@ int main() {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   int w, h, ch;
   stbi_set_flip_vertically_on_load(true);
-  unsigned char *data = stbi_load("container.jpg", &w, &h, &ch, 0);
+  unsigned char* data = stbi_load("container.jpg", &w, &h, &ch, 0);
   if (data) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE,
-                 data);
+      data);
     glGenerateMipmap(GL_TEXTURE_2D);
-  } else {
+  }
+  else {
     std::cout << "Failed to load texture\n";
   }
   stbi_image_free(data);
@@ -160,9 +161,10 @@ int main() {
   data = stbi_load("awesomeface.png", &w, &h, &ch, 0);
   if (data) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                 data);
+      data);
     glGenerateMipmap(GL_TEXTURE_2D);
-  } else {
+  }
+  else {
     std::cout << "Failed to load texture\n";
   }
   stbi_image_free(data);
@@ -191,7 +193,7 @@ int main() {
     our_shader.use();
 
     glm::mat4 projection = glm::perspective(
-        glm::radians(fov), (float)SCR_W / (float)SCR_H, 0.1f, 100.0f);
+      glm::radians(fov), (float)SCR_W / (float)SCR_H, 0.1f, 100.0f);
     our_shader.set_mat4("projection", projection);
 
     glm::mat4 view = glm::mat4(1.0f);
@@ -209,7 +211,7 @@ int main() {
       model = glm::translate(model, cube_positions[i]);
       float angle = 20.0f * i;
       model =
-          glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+        glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
       our_shader.set_mat4("model", model);
 
       glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -228,9 +230,9 @@ int main() {
 
 // process all input: query GLFW whether relevant keys are pressed/released this
 // frame and react accordingly
-void process_input(GLFWwindow *window) {
+void process_input(GLFWwindow* window) {
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS ||
-      glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+    glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
     glfwSetWindowShouldClose(window, true);
 
   float camera_speed = 2.5 * delta_time;
@@ -240,21 +242,21 @@ void process_input(GLFWwindow *window) {
     camera_pos -= camera_speed * camera_front;
   if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     camera_pos -=
-        glm::normalize(glm::cross(camera_front, camera_up)) * camera_speed;
+    glm::normalize(glm::cross(camera_front, camera_up)) * camera_speed;
   if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     camera_pos +=
-        glm::normalize(glm::cross(camera_front, camera_up)) * camera_speed;
+    glm::normalize(glm::cross(camera_front, camera_up)) * camera_speed;
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback
 // function executes
-void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
   // make sure the viewport matches the new window dimensions; note that width
   // and height will be significantly larger than specified on retina displays.
   glViewport(0, 0, width, height);
 }
 
-void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
   if (first_mouse) {
     lastx = xpos;
     lasty = ypos;
@@ -285,7 +287,7 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
   camera_front = glm::normalize(front);
 }
 
-void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
   fov -= yoffset;
   if (fov < 1.0f)
     fov = 1.0f;
