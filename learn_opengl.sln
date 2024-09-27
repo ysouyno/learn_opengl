@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "camera_circle", "camera_cir
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lighting_colors", "lighting_colors\lighting_colors.vcxproj", "{222800D7-DA8E-4871-819D-F818384EE118}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lighting_basic_lighting", "lighting_basic_lighting\lighting_basic_lighting.vcxproj", "{FC5B3157-F498-41F4-AFF6-93AF865D8234}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -25,6 +27,10 @@ Global
 		{222800D7-DA8E-4871-819D-F818384EE118}.Debug|Win32.Build.0 = Debug|Win32
 		{222800D7-DA8E-4871-819D-F818384EE118}.Release|Win32.ActiveCfg = Release|Win32
 		{222800D7-DA8E-4871-819D-F818384EE118}.Release|Win32.Build.0 = Release|Win32
+		{FC5B3157-F498-41F4-AFF6-93AF865D8234}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FC5B3157-F498-41F4-AFF6-93AF865D8234}.Debug|Win32.Build.0 = Debug|Win32
+		{FC5B3157-F498-41F4-AFF6-93AF865D8234}.Release|Win32.ActiveCfg = Release|Win32
+		{FC5B3157-F498-41F4-AFF6-93AF865D8234}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
