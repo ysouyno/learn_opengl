@@ -1,0 +1,73 @@
+#+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:nil arch:headline
+#+options: author:t broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+options: timestamp:t title:t toc:t todo:t |:t
+#+title: learn_opengl
+#+date: <2024-09-27 周五>
+#+author: ysouyno
+#+email:
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+#+creator: Emacs 29.4 (Org mode 9.6.15)
+#+cite_export:
+
+教程链接：“[[https://learnopengl-cn.github.io/][LearnOpenGL CN]]”。
+
+* ~linux~ 平台环境配置
+
+** ~archlinux~ 环境配置
+
+分别用到了 ~glfw~ ， ~stb~ ， ~glm~ 和 ~glad~ ，其中 ~glfw~ 和 ~stb~ 直接从 ~github~ 上克隆最新代码：
+
+#+begin_src shellsession
+$ git clone https://github.com/glfw/glfw.git
+$ git clone https://github.com/nothings/stb.git
+#+end_src
+
+其中 ~glfw~ 需要编译一下才能使用，很简单：
+
+#+begin_src shellsession
+$ cd glfw
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+#+end_src
+
+~glm~ 是按照教程中的建议，选择了低于 ~0.9.9~ 的版本，下载地址：“[[https://github.com/g-truc/glm/releases/tag/0.9.8.5][GLM 0.9.8.5]]”。
+
+~glad~ 用的好像是教程中提供的在线服务链接生成的“[[https://glad.dav1d.de][Glad]]”，另项目中的 ~glad.c~ 是指向本机电脑中的一个软链接。
+
+** 编译
+
+编译及链接选项参考项目的 ~.vscode~ 中的文件。另因为使用 ~clang-format~ 格式化代码，头文件的顺序会影响编译，所以我在 ~~/.clang-format~ 中关闭了这项功能。
+
+#+begin_src shellsession
+$ cat ~/.clang-format
+Language: Cpp
+SortIncludes: false
+#+end_src
+
+* ~windows~ 平台环境配置
+
+** ~vs2010~
+
+1. 创建 ~solution~ 文件 ~learn_opengl.sln~ 。
+2. 创建 ~third_party~ 目录。
+3. 下载预编译好的“[[https://github.com/glfw/glfw/releases/download/3.3.5/glfw-3.3.5.bin.WIN32.zip][glfw-3.3.5.bin.WIN32.zip]]”。
+
+* 其它
+
+** “坐标系统”中代码说明
+
+在“坐标系统”的“更多立方体”中提供的代码，文章中提到这十个立方体都能自主旋转，其实不然。我稍微修改了他的代码实现了，见：“[[https://github.com/ysouyno/learn_opengl/commit/b49247b5f9e1dd5e5b92809fe2235b948185767a][more cubes]]”，主要是这两处修改：
+
+#+begin_src c++
+  float angle = 20.0f * (i + 1);
+  model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle),
+                      glm::vec3(1.0f, 0.3f, 0.5f));
+#+end_src
+
+原代码中 ~angle = 20.0f * i~ 会导致最中间的那个立方体不旋转。
