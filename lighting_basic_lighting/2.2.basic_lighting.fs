@@ -1,6 +1,6 @@
-#version 330 core
-out vec4 FragColor;
+# version 330 core
 
+out vec4 FragColor;
 in vec3 Normal;
 in vec3 FragPos;
 
@@ -17,7 +17,7 @@ void main()
 
   // diffuse
   // 因为只关心方向向量的方向，所以这里先进行标准化，即 normalize
-  // norm 是书中所说的法向量，垂直于立面体表面
+  // norm 是书中所说的法向量，垂直于立方体表面
   vec3 norm = normalize(Normal);
   vec3 lightDir = normalize(lightPos - FragPos);
 

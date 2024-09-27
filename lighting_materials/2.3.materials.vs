@@ -1,4 +1,5 @@
 #version 330 core
+
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 
@@ -13,9 +14,8 @@ void main()
 {
   FragPos = vec3(model * vec4(aPos, 1.0));
 
-  // 因为例子中没有对立方体进行不等比缩放，所以这里的法线矩阵（Normal Matrix）没有必要
-  // Normal = mat3(transpose(inverse(model))) *aNormal;
-  Normal = aNormal;
+  // 这里的法线矩阵（Normal Matrix）是为了修正不等比缩放
+  Normal = mat3(transpose(inverse(model))) *aNormal;
 
   gl_Position = projection * view * vec4(aPos, 1.0);
 }
