@@ -115,3 +115,5 @@ SortIncludes: false
 
 #+ATTR_HTML: :width 50%
 [[file:files/20240927_1.png]]
+
+原来在设置 ~material.shininess~ 时变量名拼写错误了，看评论说 ~shininess~ 设置为 ~0~ 时会出现黑色。

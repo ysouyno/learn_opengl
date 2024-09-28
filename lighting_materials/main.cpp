@@ -168,14 +168,25 @@ int main() {
 
     // be sure to activate shader when setting uniforms/drawing objects
     lightingShader.use();
-    lightingShader.set_vec3("objectColor", 1.0f, 0.5f, 0.31f);
-    lightingShader.set_vec3("lightColor", 1.0f, 1.0f, 1.0f);
-    lightingShader.set_vec3("lightPos", lightPos);
+    lightingShader.set_vec3("light.position", lightPos);
     lightingShader.set_vec3("viewPos", camera.Position);
+
+    // light properties
+    glm::vec3 lightColor;
+    lightColor.x = static_cast<float>(sin(glfwGetTime() * 2.0));
+    lightColor.y = static_cast<float>(sin(glfwGetTime() * 0.7));
+    lightColor.z = static_cast<float>(sin(glfwGetTime() * 1.3));
+    glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // decrease the influence
+    glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
+    lightingShader.set_vec3("light.ambient", ambientColor);
+    lightingShader.set_vec3("light.diffuse", diffuseColor);
+    lightingShader.set_vec3("light.specular", 1.0f, 1.0f, 1.0f);
+
+    // material properties
     lightingShader.set_vec3("material.ambient", 1.0f, 0.5f, 0.31f);
     lightingShader.set_vec3("material.diffuse", 1.0f, 0.5f, 0.31f);
     lightingShader.set_vec3("material.specular", 0.5f, 0.5f, 0.5f);
-    lightingShader.set_float("material.shiniess", 32.0f);
+    lightingShader.set_float("material.shininess", 32.0f);
 
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
