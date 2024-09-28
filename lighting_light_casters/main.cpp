@@ -198,6 +198,7 @@ int main() {
     lightingShader.set_vec3("light.position", camera.Position);
     lightingShader.set_vec3("light.direction", camera.Front);
     lightingShader.set_float("light.cutOff", glm::cos(glm::radians(12.5f)));
+    lightingShader.set_float("light.outerCutOff", glm::cos(glm::radians(17.5f)));
     lightingShader.set_vec3("viewPos", camera.Position);
 
     // light properties
