@@ -156,9 +156,11 @@ int main() {
   glEnableVertexAttribArray(0);
 
   unsigned int diffuseMap = loadTexture("container2.png");
+  unsigned int specualrMap = loadTexture("container2_specular.png");
 
   lightingShader.use();
   lightingShader.set_int("material.diffuse", 0);
+  lightingShader.set_int("material.specular", 1);
 
   // render loop
   // -----------
@@ -204,6 +206,8 @@ int main() {
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, diffuseMap);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, specualrMap);
 
     // render the cube
     glBindVertexArray(cubeVAO);
