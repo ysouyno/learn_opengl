@@ -117,3 +117,18 @@ SortIncludes: false
 [[file:files/20240927_1.png]]
 
 原来在设置 ~material.shininess~ 时变量名拼写错误了，看评论说 ~shininess~ 设置为 ~0~ 时会出现黑色。
+
+* <2024-09-28 周六> 光照.光照贴图.练习
+
+练习的最后一题没有提供答案，我的答案是（上图是参考答案，下图是我的答案）：
+
+#+ATTR_HTML: :width 50%
+[[file:files/20240928_0.png]]
+
+#+ATTR_HTML: :width 50%
+[[file:files/20240928_1.png]]
+
+我是这么修改代码的：
+
+#+ATTR_HTML: :width 80%
+[[file:files/20240928_2.png]]
