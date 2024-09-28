@@ -28,9 +28,6 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-// lighting
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-
 int main() {
   // glfw: initialize and configure
   // ------------------------------
@@ -122,6 +119,20 @@ int main() {
     -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
   };
 
+  // positions all containers
+  glm::vec3 cubePositions[] = {
+    glm::vec3( 0.0f,  0.0f,  0.0f),
+    glm::vec3( 2.0f,  5.0f, -15.0f),
+    glm::vec3(-1.5f, -2.2f, -2.5f),
+    glm::vec3(-3.8f, -2.0f, -12.3f),
+    glm::vec3( 2.4f, -0.4f, -3.5f),
+    glm::vec3(-1.7f,  3.0f, -7.5f),
+    glm::vec3( 1.3f, -2.0f, -2.5f),
+    glm::vec3( 1.5f,  2.0f, -2.5f),
+    glm::vec3( 1.5f,  0.2f, -1.5f),
+    glm::vec3(-1.3f,  1.0f, -1.5f)
+  };
+
   // first, configure the cube's VAO (and VBO)
   unsigned int VBO, cubeVAO;
   glGenVertexArrays(1, &cubeVAO);
@@ -142,21 +153,20 @@ int main() {
   glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
   glEnableVertexAttribArray(2);
 
-  // second, configure the light's VAO (VBO stays the same; the vertices are the same for the light object which is also a 3D cube)
+  // second, configure the light's VAO (VBO stays the same;
+  // the vertices are the same for the light object which is also a 3D cube)
   unsigned int lightCubeVAO;
   glGenVertexArrays(1, &lightCubeVAO);
   glBindVertexArray(lightCubeVAO);
 
-  // we only need to bind to the VBO (to link it with glVertexAttribPointer),
-  // no need to fill it; the VBO's data already contains all we need
-  // (it's already bound, but we do it again for educational purposes)
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
+  // note that we update the lamp's position attribute's stride to reflect the updated buffer data
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
 
   unsigned int diffuseMap = loadTexture("container2.png");
-  unsigned int specualrMap = loadTexture("container2_specular.png");
+  unsigned int specularMap = loadTexture("container2_specular.png");
 
   lightingShader.use();
   lightingShader.set_int("material.diffuse", 0);
@@ -182,7 +192,7 @@ int main() {
 
     // be sure to activate shader when setting uniforms/drawing objects
     lightingShader.use();
-    lightingShader.set_vec3("light.position", lightPos);
+    lightingShader.set_vec3("light.direction", -0.2f, -1.0f, -0.3f);
     lightingShader.set_vec3("viewPos", camera.Position);
 
     // light properties
@@ -191,8 +201,7 @@ int main() {
     lightingShader.set_vec3("light.specular", 1.0f, 1.0f, 1.0f);
 
     // material properties
-    lightingShader.set_vec3("material.specular", 0.5f, 0.5f, 0.5f);
-    lightingShader.set_float("material.shininess", 64.0f);
+    lightingShader.set_float("material.shininess", 32.0f);
 
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -207,23 +216,36 @@ int main() {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, diffuseMap);
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, specualrMap);
+    glBindTexture(GL_TEXTURE_2D, specularMap);
 
     // render the cube
-    glBindVertexArray(cubeVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    // glBindVertexArray(cubeVAO);
+    // glDrawArrays(GL_TRIANGLES, 0, 36);
 
     // also draw the lamp object
-    lightCubeShader.use();
-    lightCubeShader.set_mat4("projection", projection);
-    lightCubeShader.set_mat4("view", view);
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, lightPos);
-    model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-    lightCubeShader.set_mat4("model", model);
+    // lightCubeShader.use();
+    // lightCubeShader.set_mat4("projection", projection);
+    // lightCubeShader.set_mat4("view", view);
+    // model = glm::mat4(1.0f);
+    // model = glm::translate(model, lightPos);
+    // model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+    // lightCubeShader.set_mat4("model", model);
 
-    glBindVertexArray(lightCubeVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    // glBindVertexArray(lightCubeVAO);
+    // glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    // render containers
+    glBindVertexArray(cubeVAO);
+    for (unsigned int i = 0; i < 10; i++) {
+      // calculate the model matrix for each object and pass it to shader before drawing
+      glm::mat4 model = glm::mat4(1.0f);
+      model = glm::translate(model, cubePositions[i]);
+      float angle = 20.0f * i;
+      model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+      lightingShader.set_mat4("model", model);
+
+      glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
     // -------------------------------------------------------------------------------
