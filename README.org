@@ -13,6 +13,8 @@
 #+creator: Emacs 29.4 (Org mode 9.6.15)
 #+cite_export:
 
+* <2024-09-29 周日> 前言
+
 教程链接：“[[https://learnopengl-cn.github.io/][LearnOpenGL CN]]”。
 
 * <2021-12-05 周日> 环境配置（ ~linux~ ）
@@ -57,6 +59,15 @@ SortIncludes: false
 1. 创建 ~solution~ 文件 ~learn_opengl.sln~ 。
 2. 创建 ~third_party~ 目录。
 3. 下载预编译好的“[[https://github.com/glfw/glfw/releases/download/3.3.5/glfw-3.3.5.bin.WIN32.zip][glfw-3.3.5.bin.WIN32.zip]]”。
+
+** ~assimp~
+
+想在 ~vs2010~ 上自己编译 ~assimp~ 的，发现 ~cmake~ 自 ~3.25~ 版本已经移除了 ~vs2010~ ，所以我选择了 ~cmake-3.24.4~ 版本。其实不算什么，只是提醒一下以节省时间。
+
+这个库很难编译，或者说非常麻烦。我在这里“[[https://sourceforge.net/projects/assimp/files/assimp-3.1/][assimp-3.1.1-win-binaries.zip]]”找到了一个预编译二进制包下载，但是好像不能运行。居然提示，一个 ~exe~ 的运行依赖另一个 ~exe~ ，开眼了。
+
+#+ATTR_HTML: :width 60%
+[[file:files/20240929_0.png]]
 
 * <2021-12-06 周一> 入门.坐标系统
 

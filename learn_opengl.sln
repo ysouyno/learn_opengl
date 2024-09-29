@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lighting_light_casters", "l
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lighting_multiple_lights", "lighting_multiple_lights\lighting_multiple_lights.vcxproj", "{6E8F066D-1BAA-49C5-B7ED-795E9D1DAE81}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "model_loading_model", "model_loading_model\model_loading_model.vcxproj", "{C188783E-A7CC-46AA-862D-17A67A186FF9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -55,6 +57,10 @@ Global
 		{6E8F066D-1BAA-49C5-B7ED-795E9D1DAE81}.Debug|Win32.Build.0 = Debug|Win32
 		{6E8F066D-1BAA-49C5-B7ED-795E9D1DAE81}.Release|Win32.ActiveCfg = Release|Win32
 		{6E8F066D-1BAA-49C5-B7ED-795E9D1DAE81}.Release|Win32.Build.0 = Release|Win32
+		{C188783E-A7CC-46AA-862D-17A67A186FF9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C188783E-A7CC-46AA-862D-17A67A186FF9}.Debug|Win32.Build.0 = Debug|Win32
+		{C188783E-A7CC-46AA-862D-17A67A186FF9}.Release|Win32.ActiveCfg = Release|Win32
+		{C188783E-A7CC-46AA-862D-17A67A186FF9}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
