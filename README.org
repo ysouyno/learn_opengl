@@ -85,7 +85,7 @@ SortIncludes: false
 
 + ~GoRuntime_DotNetFramework_3.x.exe~
 + ~DXSDK_Jun10.exe~ （ ~win10~ 系统上它依赖于 ~DotNetFramework_3.5~ ）
-+ ~cmake-2.8.6-win32-x86.exe~
++ [[https://cmake.org/files/v2.8/cmake-2.8.6-win32-x86.exe][~cmake-2.8.6-win32-x86.exe~]]
 
 #+ATTR_HTML: :width 60%
 [[file:files/20240929_3.png]]
@@ -96,7 +96,7 @@ SortIncludes: false
 + 尝试卸载 ~Microsoft Visual C++ 2012 Redistributable (x86)~ ，失败。
 + 尝试卸载 ~Microsoft Visual C++ 2010 x64 Redistributable - 1010.0.40219~ ，成功。
 
-这样 ~cmake-2.8.6~ 也运行成功了：
+这样 ~cmake-2.8.6~ 也运行成功了，附上我的 ~csdn~ 资源：“[[https://download.csdn.net/download/ftuc5dn/89815337][assimp-3.1.1 预编译二进制文件（32位）]]”。
 
 #+ATTR_HTML: :width 60%
 [[file:files/20240929_4.png]]
