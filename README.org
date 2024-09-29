@@ -69,7 +69,7 @@ SortIncludes: false
 #+ATTR_HTML: :width 60%
 [[file:files/20240929_0.png]]
 
-目前的进展是，直接双击 ~assimp.exe~ 会提示缺少 ~msvcr110.dll~ 和 ~msvcp110.dll~ ，这两个文件我在网上下载的出现各种问题，最后安装了 ~vcredist_x86.exe~ 解决的，虽然 ~assimp.exe~ 成功运行了，但是上面的错误提示框依然存在。所以我只能选择 ~vs2022~ 来编译。因为其实这个库在 ~vs2022~ 上编译非常方便，不用任何配置就编译成功了。
+目前的进展是，直接双击 ~assimp.exe~ 会提示缺少 ~msvcr110.dll~ 和 ~msvcp110.dll~ ，这两个文件我在网上下载的出现各种问题，最后安装了 ~vcredist_x86.exe~ （即 ~Microsoft Visual C++ 2012 Redistributable (x86)~ ）解决的，虽然 ~assimp.exe~ 成功运行了，但是上面的错误提示框依然存在。所以我只能选择 ~vs2022~ 来编译。因为其实这个库在 ~vs2022~ 上编译非常方便，在 ~cmake-3.24.4~ 上不用任何配置就编译成功了。
 
 #+ATTR_HTML: :width 60%
 [[file:files/20240929_1.png]]
@@ -78,6 +78,33 @@ SortIncludes: false
 
 #+ATTR_HTML: :width 60%
 [[file:files/20240929_2.png]]
+
+*** ~assimp-3.1.1~
+
+尝试自己在 ~vs2010~ 上编译 ~assimp-3.1.1~ ，首先需要安装：
+
++ ~GoRuntime_DotNetFramework_3.x.exe~
++ ~DXSDK_Jun10.exe~ （ ~win10~ 系统上它依赖于 ~DotNetFramework_3.5~ ）
++ ~cmake-2.8.6-win32-x86.exe~
+
+#+ATTR_HTML: :width 60%
+[[file:files/20240929_3.png]]
+
+在安装 ~GoRuntime_DotNetFramework_3.x.exe~ 时发生 ~Error Code: S1023~
+
++ 尝试卸载 ~Microsoft Visual C++ 2010 x86 Redistributable - 1010.0.40219~ ，失败。
++ 尝试卸载 ~Microsoft Visual C++ 2012 Redistributable (x86)~ ，失败。
++ 尝试卸载 ~Microsoft Visual C++ 2010 x64 Redistributable - 1010.0.40219~ ，成功。
+
+这样 ~cmake-2.8.6~ 也运行成功了：
+
+#+ATTR_HTML: :width 60%
+[[file:files/20240929_4.png]]
+
+~vs2010~ 成功：
+
+#+ATTR_HTML: :width 60%
+[[file:files/20240929_5.png]]
 
 * <2021-12-06 周一> 入门.坐标系统
 
