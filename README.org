@@ -81,11 +81,11 @@ SortIncludes: false
 
 *** ~assimp-3.1.1~
 
-尝试自己在 ~vs2010~ 上编译 ~assimp-3.1.1~ ，首先需要安装：
+尝试自己在 ~vs2010~ 上编译 [[https://sourceforge.net/projects/assimp/files/assimp-3.1/][assimp-3.1.1]] ，首先需要安装：
 
 + ~GoRuntime_DotNetFramework_3.x.exe~
 + ~DXSDK_Jun10.exe~ （ ~win10~ 系统上它依赖于 ~DotNetFramework_3.5~ ）
-+ [[https://cmake.org/files/v2.8/cmake-2.8.6-win32-x86.exe][~cmake-2.8.6-win32-x86.exe~]]
++ [[https://cmake.org/files/v2.8/cmake-2.8.6-win32-x86.exe][cmake-2.8.6-win32-x86.exe]]
 
 #+ATTR_HTML: :width 60%
 [[file:files/20240929_3.png]]

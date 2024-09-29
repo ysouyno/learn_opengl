@@ -433,3 +433,4 @@ FodyWeavers.xsd
 # By ysouyno
 *.html
 *.htm
+!nanosuit.obj
