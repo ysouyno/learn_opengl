@@ -69,6 +69,16 @@ SortIncludes: false
 #+ATTR_HTML: :width 60%
 [[file:files/20240929_0.png]]
 
+目前的进展是，直接双击 ~assimp.exe~ 会提示缺少 ~msvcr110.dll~ 和 ~msvcp110.dll~ ，这两个文件我在网上下载的出现各种问题，最后安装了 ~vcredist_x86.exe~ 解决的，虽然 ~assimp.exe~ 成功运行了，但是上面的错误提示框依然存在。所以我只能选择 ~vs2022~ 来编译。因为其实这个库在 ~vs2022~ 上编译非常方便，不用任何配置就编译成功了。
+
+#+ATTR_HTML: :width 60%
+[[file:files/20240929_1.png]]
+
+我用的是当前最新的版本 ~assimp-5.4.3~ ，运行效果如下：
+
+#+ATTR_HTML: :width 60%
+[[file:files/20240929_2.png]]
+
 * <2021-12-06 周一> 入门.坐标系统
 
 在“坐标系统”的“更多立方体”中提供的代码，文章中提到这十个立方体都能自主旋转，其实不然。我稍微修改了他的代码实现了，见：“[[https://github.com/ysouyno/learn_opengl/commit/b49247b5f9e1dd5e5b92809fe2235b948185767a][more cubes]]”，主要是这两处修改：
