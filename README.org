@@ -214,7 +214,7 @@ SortIncludes: false
 + 手电筒（ ~Flashlight~ ）：一个摆放在观察者视角的聚光。
 + ~GLSL Uniform~ 数组（ ~GLSL Uniform Array~ ）：一个 ~uniform~ 值数组。它的工作原理和 ~C~ 语言数组大致一样，只是不能动态分配内存。
 
-* <2024-09-30 周一> 高级 ~OpenGL~ .模板测试.物体轮廓
+* <2024-10-01 周二> 高级 ~OpenGL~ .模板测试.物体轮廓
 
 注意到这个变量非常重要 ~GL_STENCIL_BUFFER_BIT~ ，如果不设置它，效果非常的差，你可以试着取消它看看效果。
 
