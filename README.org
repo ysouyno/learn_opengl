@@ -214,8 +214,87 @@ SortIncludes: false
 + 手电筒（ ~Flashlight~ ）：一个摆放在观察者视角的聚光。
 + ~GLSL Uniform~ 数组（ ~GLSL Uniform Array~ ）：一个 ~uniform~ 值数组。它的工作原理和 ~C~ 语言数组大致一样，只是不能动态分配内存。
 
-* <2024-10-01 周二> 高级 ~OpenGL~ .模板测试.物体轮廓
+* <2024-10-01 周二> 高级 ~OpenGL~ .模板测试.物体轮廓（一）
 
 注意到这个变量非常重要 ~GL_STENCIL_BUFFER_BIT~ ，如果不设置它，效果非常的差，你可以试着取消它看看效果。
 
 说实话，我真的没有看懂这一节的内容！
+
+* <2024-10-01 周二> 高级 ~OpenGL~ .模板测试.物体轮廓（二）
+
+关于物体轮廓的 ~stencil~ 代码流程理解：
+
+#+begin_src c++
+  // configure global opengl state
+  // -----------------------------
+  glEnable(GL_DEPTH_TEST);
+  glDepthFunc(GL_LESS);
+  glEnable(GL_STENCIL_TEST);
+  glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+  glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+#+end_src
+
+在全局设置中，先启用 ~stencil~ 测试，并设置不为 ~1~ 时通过测试（这里似乎没什么用），这里有两个函数通俗点讲：
+
++ ~glStencilFunc~ 设置对缓冲区做什么，比如等于 ~1~ 时通过测试。
++ ~glStencilOp~ 设置如何更新缓冲区，比如上述代码，第一个参数表示深度测试通过但 ~stencil~ 测试失败时保留缓冲区，第二个参数表示 ~stencil~ 测试通过但深度测试失败时保留缓冲区，第三个参数表示两个测试都通过时将模板值设置为 ~glStencilFunc~ 函数设置的 ~ref~ 值。
+
+#+begin_src c++
+  // draw floor as normal, but don't write the floor to the stencil buffer,
+  // we only care about the containers. We set its mask to 0x00 to not write to the stencil buffer.
+  glStencilMask(0x00);
+#+end_src
+
+先绘制地板，因为地板不进模板测试缓冲区，所以设置 ~mask~ 为 ~0x00~ ，此时的模板测试缓冲区为空。
+
+#+begin_src c++
+  // 1st. render pass, draw objects as normal, writing to the stencil buffer
+  // --------------------------------------------------------------------
+  glStencilFunc(GL_ALWAYS, 1, 0xFF);
+  glStencilMask(0xFF);
+#+end_src
+
+绘制完地板后要写入模板测试缓冲区了，所以此时将 ~mask~ 设置为 ~0xFF~ ，表示启用模板缓冲区写入。通过使用 ~GL_ALWAYS~ 模板测试函数，我们保证了箱子的每个片段都会将模板缓冲的模板值更新为 ~1~ 。
+
++ ~glStencilFunc(GL_ALWAYS, 1, 0xFF);~ 表示总是将模板值与参考值 ~1~ 进行比较？（对这个函数好抽象）
+
+紧接着绘制立方体，这样立方体的数据就写入到了模板测试缓冲区里了。此时缓冲区里只有两个立方体的数据（没有地板哦），然后设置：
+
+#+begin_src c++
+  // 2nd. render pass: now draw slightly scaled versions of the objects, this time disabling stencil writing.
+  // Because the stencil buffer is now filled with several 1s. The parts of the buffer that are 1 are not drawn, thus only drawing
+  // the objects' size differences, making it look like borders.
+  // -----------------------------------------------------------------------------------------------------------------------------
+  glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+  glStencilMask(0x00);
+  glDisable(GL_DEPTH_TEST);
+  shaderSingleColor.use();
+  float scale = 1.1f;
+#+end_src
+
+这里设置不为 ~1~ 时通过模板测试，所以已经绘制的两个立方体之外的区域才可以通过模板测试，并禁止了模板缓冲区的写入。同时禁用了深度测试，它的目的是为了在绘制时边框不会被地板覆盖。
+
+这里的伪代码表达了整个流程，非常直观：
+
+#+begin_src c++
+  glEnable(GL_DEPTH_TEST);
+  glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+  glStencilMask(0x00); // 记得保证我们在绘制地板的时候不会更新模板缓冲
+  normalShader.use();
+  DrawFloor()
+
+  glStencilFunc(GL_ALWAYS, 1, 0xFF);
+  glStencilMask(0xFF);
+  DrawTwoContainers();
+
+  glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+  glStencilMask(0x00);
+  glDisable(GL_DEPTH_TEST);
+  shaderSingleColor.use();
+  DrawTwoScaledUpContainers();
+  glStencilMask(0xFF);
+  glEnable(GL_DEPTH_TEST);
+#+end_src
