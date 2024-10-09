@@ -31,6 +31,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_opengl_framebuffer
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_opengl_cubemaps", "advanced_opengl_cubemaps\advanced_opengl_cubemaps.vcxproj", "{FC51876D-3557-4270-92F9-8B102D7B5901}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_opengl_advanced_glsl", "advanced_opengl_advanced_glsl\advanced_opengl_advanced_glsl.vcxproj", "{CB9D9AFB-179A-4977-8478-6D9868D9617B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -93,6 +95,10 @@ Global
 		{FC51876D-3557-4270-92F9-8B102D7B5901}.Debug|Win32.Build.0 = Debug|Win32
 		{FC51876D-3557-4270-92F9-8B102D7B5901}.Release|Win32.ActiveCfg = Release|Win32
 		{FC51876D-3557-4270-92F9-8B102D7B5901}.Release|Win32.Build.0 = Release|Win32
+		{CB9D9AFB-179A-4977-8478-6D9868D9617B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CB9D9AFB-179A-4977-8478-6D9868D9617B}.Debug|Win32.Build.0 = Debug|Win32
+		{CB9D9AFB-179A-4977-8478-6D9868D9617B}.Release|Win32.ActiveCfg = Release|Win32
+		{CB9D9AFB-179A-4977-8478-6D9868D9617B}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
