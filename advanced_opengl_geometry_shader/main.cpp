@@ -45,7 +45,7 @@ int main() {
 
   // build and compile shaders
   // -------------------------
-  Shader shader("4.9.geometry_shader.vs", "4.9.geometry_shader.fs"/*, "4.9.geometry_shader.gs"*/);
+  Shader shader("4.9.geometry_shader.vs", "4.9.geometry_shader.fs", "4.9.geometry_shader.gs");
 
   // set up vertex data (and buffer(s)) and configure vertex attributes
   // ------------------------------------------------------------------
