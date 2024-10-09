@@ -298,3 +298,25 @@ SortIncludes: false
   glStencilMask(0xFF);
   glEnable(GL_DEPTH_TEST);
 #+end_src
+
+* <2024-10-09 周三> 高级 ~OpenGL~ .几何着色器
+
+#+begin_src glsl
+  void build_house(vec4 position) {
+    fColor = gs_in[0].color;
+    gl_Position = position + vec4(-0.2, -0.2, 0.0, 0.0);
+    EmitVertex();
+    gl_Position = position + vec4( 0.2, -0.2, 0.0, 0.0);
+    EmitVertex();
+    gl_Position = position + vec4(-0.2,  0.2, 0.0, 0.0);
+    EmitVertex();
+    gl_Position = position + vec4( 0.2,  0.2, 0.0, 0.0);
+    EmitVertex();
+    gl_Position = position + vec4( 0.0,  0.4, 0.0, 0.0);
+    fColor = vec3(1.0, 1.0, 1.0); // 屋顶上的落雪效果
+    EmitVertex();
+    EndPrimitive();
+  }
+#+end_src
+
+为啥这里加上 ~fColor = vec3(1.0, 1.0, 1.0);~ 的效果是屋顶颜色渐变，以我的理解，不应该将之前 ~fColor = gs_in[0].color;~ 设置的值覆盖掉了嘛，会导致所以四个房子都变成白色的。
