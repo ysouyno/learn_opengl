@@ -75,13 +75,11 @@ int main() {
   // build and compile shaders
   // -------------------------
   Shader ourShader("4.9.default.vs", "4.9.default.fs");
+  Shader normalShader("4.9.normal_visualization.vs", "4.9.normal_visualization.fs", "4.9.normal_visualization.gs");
 
   // load models
   // -----------
   Model ourModel("nanosuit/nanosuit.obj");
-
-  // draw in wireframe
-  //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
   // render loop
   // -----------
@@ -101,21 +99,25 @@ int main() {
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // don't forget to enable shader before setting uniforms
-    ourShader.use();
-
-    // view/projection transformations
-    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+    // configure transformation matrices
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
     glm::mat4 view = camera.GetViewMatrix();
+    glm::mat4 model = glm::mat4(1.0f);
+    ourShader.use();
     ourShader.set_mat4("projection", projection);
     ourShader.set_mat4("view", view);
-
-    // render the loaded model
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-    model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
     ourShader.set_mat4("model", model);
+
+    // draw model as usual
     ourModel.Draw(ourShader);
+
+    // then draw model with normal visualizing geometry shader
+    normalShader.use();
+    normalShader.set_mat4("projection", projection);
+    normalShader.set_mat4("view", view);
+    normalShader.set_mat4("model", model);
+
+    ourModel.Draw(normalShader);
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
     // -------------------------------------------------------------------------------
