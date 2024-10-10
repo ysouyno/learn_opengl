@@ -434,3 +434,5 @@ FodyWeavers.xsd
 *.html
 *.htm
 !nanosuit.obj
+!rock.obj
+!planet.obj
