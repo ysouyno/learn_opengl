@@ -333,4 +333,7 @@ SortIncludes: false
 
 * <2024-10-10 周四> 高级 ~OpenGL~ .实例化.小行星带
 
-哇喔！效果杠杠的。
+哇喔！效果杠杠的。但是这里并没有使用实例化，它用了一个超大的 ~modelMatrices~ 数组来存放小行星的矩阵。最终运行效果：
+
+#+ATTR_HTML: :width 50%
+[[file:files/20241010_0.png]]
