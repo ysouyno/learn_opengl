@@ -45,29 +45,59 @@ int main() {
   // -------------------------
   Shader shader("4.10.instancing.vs", "4.10.instancing.fs");
 
+  // generate a list of 100 quad locations/translation-vectors
+  // ---------------------------------------------------------
+  glm::vec2 translations[100];
+  int index = 0;
+  float offset = 0.1f;
+  for (int y = -10; y < 10; y += 2) {
+    for (int x = -10; x < 10; x += 2) {
+      glm::vec2 translation;
+      translation.x = (float)x / 10.0f + offset;
+      translation.y = (float)y / 10.0f + offset;
+      translations[index++] = translation;
+    }
+  }
+
+  shader.use();
+  for (unsigned int i = 0; i < 100; ++i) {
+    std::stringstream ss;
+    std::string index;
+    ss << i;
+    index = ss.str();
+    shader.set_vec2(("offsets[" + index + "]").c_str(), translations[i]);
+  }
+
   // set up vertex data (and buffer(s)) and configure vertex attributes
   // ------------------------------------------------------------------
-  float points[] = {
-      -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // top-left
-       0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // top-right
-       0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // bottom-right
-      -0.5f, -0.5f, 1.0f, 1.0f, 0.0f  // bottom-left
+  float quadVertices[] = {
+    // positions     // colors
+    -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
+     0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
+    -0.05f, -0.05f,  0.0f, 0.0f, 1.0f,
+
+    -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
+     0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
+     0.05f,  0.05f,  0.0f, 1.0f, 1.0f
   };
+
   unsigned int VBO, VAO;
   glGenBuffers(1, &VBO);
   glGenVertexArrays(1, &VAO);
   glBindVertexArray(VAO);
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(points), &points, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
   glEnableVertexAttribArray(1);
   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(2 * sizeof(float)));
-  glBindVertexArray(0);
 
   // render loop
   // -----------
   while (!glfwWindowShouldClose(window)) {
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+      glfwSetWindowShouldClose(window, true);
+
     // render
     // ------
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -76,7 +106,7 @@ int main() {
     // draw points
     shader.use();
     glBindVertexArray(VAO);
-    glDrawArrays(GL_POINTS, 0, 4);
+    glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 100); // 100 triangles of 6 vertices each
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
     // -------------------------------------------------------------------------------
