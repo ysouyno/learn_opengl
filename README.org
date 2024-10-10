@@ -375,3 +375,20 @@ SortIncludes: false
 #+end_src
 
 为什么 ~glVertexAttribPointer~ 的第五个参数是 ~sizeof(glm::mat4)~ 而不是 ~sizeof(glm::vec4)~ 呢？
+
+* <2024-10-10 周四> 高级 ~OpenGL~ .抗锯齿
+
+只需要添加两行代码：
+
+#+begin_src c++
+  glfwWindowHint(GLFW_SAMPLES, 4);
+  glEnable(GL_MULTISAMPLE);
+#+end_src
+
+也可以只有一句代码：
+
+#+begin_src c++
+  glfwWindowHint(GLFW_SAMPLES, 4);
+#+end_src
+
+~glfwWindowHint~ 的第二个参数表示一个像素中有几个采样点，数量越多越平滑。
