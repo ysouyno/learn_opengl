@@ -39,6 +39,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_opengl_geometry_sh
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_opengl_instancing_quads", "advanced_opengl_instancing_quads\advanced_opengl_instancing_quads.vcxproj", "{F5D0B446-2655-45CE-89C4-2D8AB076A49A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_opengl_asteroids", "advanced_opengl_asteroids\advanced_opengl_asteroids.vcxproj", "{3DFA98F0-B519-40BC-A48B-6129D01F4F88}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -121,6 +123,10 @@ Global
 		{F5D0B446-2655-45CE-89C4-2D8AB076A49A}.Debug|Win32.Build.0 = Debug|Win32
 		{F5D0B446-2655-45CE-89C4-2D8AB076A49A}.Release|Win32.ActiveCfg = Release|Win32
 		{F5D0B446-2655-45CE-89C4-2D8AB076A49A}.Release|Win32.Build.0 = Release|Win32
+		{3DFA98F0-B519-40BC-A48B-6129D01F4F88}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3DFA98F0-B519-40BC-A48B-6129D01F4F88}.Debug|Win32.Build.0 = Debug|Win32
+		{3DFA98F0-B519-40BC-A48B-6129D01F4F88}.Release|Win32.ActiveCfg = Release|Win32
+		{3DFA98F0-B519-40BC-A48B-6129D01F4F88}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
