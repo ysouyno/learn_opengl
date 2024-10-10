@@ -45,6 +45,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_opengl_asteroids",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_opengl_anti_aliasing_msaa", "advanced_opengl_anti_aliasing_msaa\advanced_opengl_anti_aliasing_msaa.vcxproj", "{DC3E8966-D7FE-439F-8C38-A4BCEC27BD21}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_opengl_anti_aliasing_offscreen", "advanced_opengl_anti_aliasing_offscreen\advanced_opengl_anti_aliasing_offscreen.vcxproj", "{60AA01E0-B350-475E-90ED-08036ADDB393}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -135,6 +137,10 @@ Global
 		{DC3E8966-D7FE-439F-8C38-A4BCEC27BD21}.Debug|Win32.Build.0 = Debug|Win32
 		{DC3E8966-D7FE-439F-8C38-A4BCEC27BD21}.Release|Win32.ActiveCfg = Release|Win32
 		{DC3E8966-D7FE-439F-8C38-A4BCEC27BD21}.Release|Win32.Build.0 = Release|Win32
+		{60AA01E0-B350-475E-90ED-08036ADDB393}.Debug|Win32.ActiveCfg = Debug|Win32
+		{60AA01E0-B350-475E-90ED-08036ADDB393}.Debug|Win32.Build.0 = Debug|Win32
+		{60AA01E0-B350-475E-90ED-08036ADDB393}.Release|Win32.ActiveCfg = Release|Win32
+		{60AA01E0-B350-475E-90ED-08036ADDB393}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
