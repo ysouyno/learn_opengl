@@ -113,7 +113,7 @@ SortIncludes: false
 #+begin_src c++
   float angle = 20.0f * (i + 1);
   model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle),
-                      glm::vec3(1.0f, 0.3f, 0.5f));
+		      glm::vec3(1.0f, 0.3f, 0.5f));
 #+end_src
 
 原代码中 ~angle = 20.0f * i~ 会导致最中间的那个立方体不旋转。
@@ -393,7 +393,7 @@ SortIncludes: false
 
 ~glfwWindowHint~ 的第二个参数表示一个像素中有几个采样点，数量越多越平滑。
 
-* <2024-10-10 周四> 高级 ~OpenGL~ .抗锯齿.离屏 ~MSAA~
+* <2024-10-10 周四> 高级 ~OpenGL~ .抗锯齿.离屏 ~MSAA~ （一）
 
 关于帧缓冲（ ~framebuffer~ ）的概念对我来说非常容易忘记，这个章节当时国庆假期在家时就反复看，但是从没入心。所以回看帧缓冲这节希望下面的知识点方便理解：
 
@@ -427,3 +427,20 @@ SortIncludes: false
 等等等。
 
 为了达到学习效果，现将在 ~advanced_opengl_anti_aliasing_msaa~ 工程基础上生成的 ~advanced_opengl_anti_aliasing_offscreen~ 工程改成使用帧缓冲的有锯齿的渲染效果。
+
+* <2024-10-11 周五> 高级 ~OpenGL~ .抗锯齿.离屏 ~MSAA~ （二）
+
+应该说我对于 ~帧缓冲~ 的理解更深入了，上节提到的将现在工程中的有锯齿效果采用帧缓冲实现一下，然后在会下一个 ~commit~ 中将有锯齿的帧缓冲变成抗锯齿的帧缓冲。
+
+我是这么修改成帧缓冲的（我是充分研究了 ~advanced_opengl_framebuffers~ 工程的）：
+
+1. 创建帧缓冲的操作不用说，放在循环外面实现（详见上上个 ~commit: 13c20bf5ceb2c5afa4bc79f0176ac91d97533822 (still trying)~ ）
+2. 然后在循环内部先将创建的新帧缓冲绑定为当前有效，并启用深度测试，紧接着正常绘制立方体。
+   + 这里为什么要启用深度测试？因为在循环结尾时为了显示 ~screen-space quad~ ，将深度测试给禁用了。
+3. 然后绑定默认的帧缓冲为当前有效，再禁用深度测试。
+4. 最后在循环尾部绘制 ~quad plane~ ，这样，一次循环结束。
+
+最后的帧缓冲的有锯齿绘制效果如下：
+
+#+ATTR_HTML: :width 80%
+[[file:files/20241011_0.png]]

@@ -67,11 +67,12 @@ int main() {
   // build and compile shaders
   // -------------------------
   Shader shader("4.11.anti_aliasing.vs", "4.11.anti_aliasing.fs");
+  Shader screenShader("4.11.aa_post.vs", "4.11.aa_post.fs");
 
   // set up vertex data (and buffer(s)) and configure vertex attributes
   // ------------------------------------------------------------------
   float cubeVertices[] = {
-    // positions       
+    // positions
     -0.5f, -0.5f, -0.5f,
      0.5f, -0.5f, -0.5f,
      0.5f,  0.5f, -0.5f,
@@ -149,6 +150,9 @@ int main() {
   glEnableVertexAttribArray(1);
   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
+  screenShader.use();
+  screenShader.set_int("screenTexture", 0);
+
   // framebuffer configuration
   // -------------------------
   unsigned int framebuffer;
@@ -192,18 +196,38 @@ int main() {
 
     // render
     // ------
+    // bind to framebuffer and draw scene as we normally would to color texture
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled for rendering screen-space quad)
+
+    // make sure we clear the framebuffer's content
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // set transformation matrices
     shader.use();
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
+    glm::mat4 view = camera.GetViewMatrix();
+    glm::mat4 model = glm::mat4(1.0f);
     shader.set_mat4("projection", projection);
-    shader.set_mat4("view", camera.GetViewMatrix());
-    shader.set_mat4("model", glm::mat4(1.0f));
+    shader.set_mat4("view", view);
+    shader.set_mat4("model", model);
 
+    // cubes
     glBindVertexArray(cubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    // now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+    // clear all relevant buffers
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    screenShader.use();
+    glBindVertexArray(quadVAO);
+    glBindTexture(GL_TEXTURE_2D, textureColorbuffer); // use the color attachment texture as the texture of the quad plane
+    glDrawArrays(GL_TRIANGLES, 0, 6);
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
     // -------------------------------------------------------------------------------
