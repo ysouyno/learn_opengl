@@ -444,3 +444,29 @@ SortIncludes: false
 
 #+ATTR_HTML: :width 80%
 [[file:files/20241011_0.png]]
+
+* <2024-10-12 周六> 高级 ~OpenGL~ .抗锯齿.离屏 ~MSAA~ （三）
+
+这段代码的用意是啥？书中不曾讲，但是我猜可能跟我上节中实现的帧缓冲的方式不太一样导致：
+
+#+begin_src c++
+  // configure second post-processing framebuffer
+  unsigned int intermediateFBO;
+  glGenFramebuffers(1, &intermediateFBO);
+  glBindFramebuffer(GL_FRAMEBUFFER, intermediateFBO);
+  // create a color attachment texture
+  unsigned int screenTexture;
+  glGenTextures(1, &screenTexture);
+  glBindTexture(GL_TEXTURE_2D, screenTexture);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture, 0); // we only need a color buffer
+#+end_src
+
+~glBlitFramebuffer~ 这个函数就像 ~gdi~ 函数 ~BitBlt~ 似的进行了两个 ~DC~ 的拷贝。那 ~intermediateFBO~ 似乎就像它的名字中的 ~intermediate~ 一样，就是一个中间位置，但是它 ~intermediateFBO~ 又是怎么绘制到 ~GL_FRAMEBUFFER~ 的默认位置 ~0~ 处的呢？（ ~glBindFramebuffer(GL_FRAMEBUFFER, 0);~ 绑定到默认帧缓冲 ~0~ 处）
+
+这是 ~离屏 MSAA~ 的最终效果（可以和上图比较一下抗锯齿效果）：
+
+#+ATTR_HTML: :width 80%
+[[file:files/20241012_0.png]]
