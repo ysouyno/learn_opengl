@@ -72,7 +72,7 @@ int main() {
 
   // build and compile our shader zprogram
   // ------------------------------------
-  Shader shader("4.1.depth_testing.vs", "4.1.depth_testing.fs");
+  Shader shader("5.2.shadow_mapping_depth.vs", "5.2.shadow_mapping_depth.fs");
 
   // set up vertex data (and buffer(s)) and configure vertex attributes
   // ------------------------------------------------------------------
@@ -160,8 +160,8 @@ int main() {
 
   // load textures
   // -------------
-  unsigned int cubeTexture = loadTexture("marble.jpg");
-  unsigned int floorTexture = loadTexture("metal.png");
+  unsigned int cubeTexture = loadTexture("wood.png");
+  unsigned int floorTexture = loadTexture("wood.png");
 
   // shader configuration
   // --------------------
