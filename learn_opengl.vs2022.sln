@@ -49,6 +49,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_opengl_anti_aliasi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_lighting_blinn_phong", "advanced_lighting_blinn_phong\advanced_lighting_blinn_phong.vcxproj", "{7E98B6A7-2FFD-4780-9949-4C9CDB230EBD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_lighting_gamma_correction", "advanced_lighting_gamma_correction\advanced_lighting_gamma_correction.vcxproj", "{5781CD2E-9982-48A4-A896-5401D542CA39}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -147,6 +149,10 @@ Global
 		{7E98B6A7-2FFD-4780-9949-4C9CDB230EBD}.Debug|Win32.Build.0 = Debug|Win32
 		{7E98B6A7-2FFD-4780-9949-4C9CDB230EBD}.Release|Win32.ActiveCfg = Release|Win32
 		{7E98B6A7-2FFD-4780-9949-4C9CDB230EBD}.Release|Win32.Build.0 = Release|Win32
+		{5781CD2E-9982-48A4-A896-5401D542CA39}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5781CD2E-9982-48A4-A896-5401D542CA39}.Debug|Win32.Build.0 = Debug|Win32
+		{5781CD2E-9982-48A4-A896-5401D542CA39}.Release|Win32.ActiveCfg = Release|Win32
+		{5781CD2E-9982-48A4-A896-5401D542CA39}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
