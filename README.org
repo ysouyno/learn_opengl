@@ -113,7 +113,7 @@ SortIncludes: false
 #+begin_src c++
   float angle = 20.0f * (i + 1);
   model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle),
-		      glm::vec3(1.0f, 0.3f, 0.5f));
+                      glm::vec3(1.0f, 0.3f, 0.5f));
 #+end_src
 
 原代码中 ~angle = 20.0f * i~ 会导致最中间的那个立方体不旋转。
@@ -470,3 +470,12 @@ SortIncludes: false
 
 #+ATTR_HTML: :width 80%
 [[file:files/20241012_0.png]]
+
+补充一下上一小段中提到的这个 ~intermediateFBO~ ，其实它是本节内容中最后部分中描述的要在帧缓冲中实现后期制作效果引入的内容，但是代码我却抄早了。要不然怎么设置应该显示为绿色的立方体显示成了灰色呢！
+
+* <2024-10-12 周六> 高级光照.高级光照. ~Blinn-Phong~
+
+按 ~B~ 键来回切换 ~Phong~ 和 ~Blinn-Phong~ 过程中有两块黑色区域一闪而过，不知道这正常不？
+
+#+ATTR_HTML: :width 50%
+[[file:files/20241012_1.gif]]
