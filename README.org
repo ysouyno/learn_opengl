@@ -538,3 +538,48 @@ SortIncludes: false
 #+end_quote
 
 因为我隐约感觉在哪里看过，所以这次复习是有意义的，这里就回答了我在[[白色屋顶][白色屋顶]]中的疑问。因为同样的道理你想啊，你只提供了三个顶点，为什么能绘制出一个三角形，在三角形边上的任意一点坐标你也没有提供，但 ~opengl~ 就是绘制出来了，所以虽然你只提供了三个顶点的颜色值，最后却是生成了一个大调色板。
+
+关于 ~uniform~ ，在代码中设置该类型变量，先通过 ~glGetUniformLocation~ 获得 *位置值* ，然后用 ~glUniform~ 设置该 *位置值* 的变量的值。
+
+** 引用自：第一章，《纹理》
+
+这节中的《纹理单元》小节，没学扎实，居然没有理解 ~纹理单元~ 的概念，也没有注意到片断着色器中的 ~sampler2D~ 的 ~uniform~ 变量居然在代码中没有为它设置值，那么程序又是如何正确显示纹理的呢？
+
+前提要清楚最终绘制纹理的过程应该是：
+
+_顶点着色器中的是纹理坐标，但是没有纹理像素值，所以片断着色器必须要能访问纹理像素值。_
+
+1. 先激活纹理单元，就是 ~uniform~ 的位置值。
+2. 再绑定纹理单元给采样器。
+3. 最后调用 ~glDrawElements~ 绘制出纹理。
+
+即：
+
+#+begin_src c++
+  glActiveTexture(GL_TEXTURE0); // 在绑定纹理之前先激活纹理单元
+  glBindTexture(GL_TEXTURE_2D, texture);
+#+end_src
+
+先 *回想上节讲的 ~uniform~ 变量的位置值* ，再看书中所说的：
+
+#+begin_quote
+你可能会奇怪为什么 ~sampler2D~ 变量是个 ~uniform~ ，我们却不用 ~glUniform~ 给它赋值。使用 ~glUniform1i~ ，我们可以给纹理采样器分配一个位置值，这样的话我们能够在一个片段着色器中设置多个纹理。一个 *纹理的位置值* 通常称为一个 *纹理单元（ ~Texture Unit~ ）* 。一个纹理的默认纹理单元是 ~0~ ，它是默认的激活纹理单元，所以教程前面部分我们没有分配一个位置值。
+#+end_quote
+
+那么现在第一步满足了，因为本例中只使用了一个纹理，默认的纹理单元 ~0~ 又是默认激活的（纹理单元 ~GL_TEXTURE0~ 默认总是被激活），再看本例代码中：
+
+#+begin_src c++
+  // bind Texture
+  glBindTexture(GL_TEXTURE_2D, texture);
+#+end_src
+
+那么现在第二步也满足了，将纹理单元 ~0~ 绑定给采样器 ~sampler2D~ 了，最后：
+
+#+begin_src c++
+  // render container
+  ourShader.use();
+  glBindVertexArray(VAO);
+  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+#+end_src
+
+这时三个条件都满足了，所以本例代码中的纹理虽然没有调用 ~glUniform~ 给采样器 ~sampler2D~ 赋值，但是却正确显示出来了。
