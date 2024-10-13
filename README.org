@@ -661,3 +661,48 @@ _顶点着色器中的是纹理坐标，但是没有纹理像素值，所以片�
 
 #+ATTR_HTML: :width 30%
 [[file:files/coordinate_systems_right_handed.png]]
+
+** 第一章，《摄像机》
+
+这次回来再看 ~摄像机方向~ 就理解了，即：对于摄像机（观察空间）来说，需要四个变量：
+
+1. 摄像机所在的位置
+2. 摄像机观察的方向，即 ~z~ 轴负方向
+3. 一个指向它右侧的向量，即 ~x~ 轴正方向
+4. 一个指向它上方的向量，即 ~y~ 轴正方向
+
+关于摄影机观察的方向，引用：
+
+#+begin_quote
+现在我们让摄像机指向场景原点： ~(0, 0, 0)~ 。还记得如果将两个矢量相减，我们就能得到这两个矢量的差吗？用场景原点向量减去摄像机位置向量的结果就是摄像机的指向向量。由于我们知道摄像机指向 ~z~ 轴负方向，但我们希望方向向量（ ~Direction Vector~ ）指向摄像机的 ~z~ 轴正方向。
+#+end_quote
+
+#+begin_src c++
+  glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+  glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+#+end_src
+
+从上面引用的话理解就是：
+
+1. 拿原点 ~cameraTarget~ 减去摄像机位置 ~cameraPos~ 得到的方向向量是，即从摄像机指向原点，也就是局部坐标系的 ~z~ 负方向。
+2. 因为希望在摄像机的坐标系中跟局部坐标系保持一致，也是屏幕指向我的方向是正方向，所以上面代码中使用了 ~()cameraPos - cameraTarget)~ 来反射的 ~z~ 的方向。
+
+即摄像机的坐标系最终成为下图的最右侧的样子：
+
+#+ATTR_HTML: :width 60%
+[[file:files/camera_axes.png]]
+
+理解了上面的四个变量，这个 ~LookAt矩阵~ 就非常好理解了：
+
+#+begin_src c++
+  glm::mat4 view;
+  view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f),
+		     glm::vec3(0.0f, 0.0f, 0.0f),
+		     glm::vec3(0.0f, 1.0f, 0.0f));
+#+end_src
+
+1. 三个参数分别表示：
+   + 摄像机的位置向量
+   + 被观察的目标向量
+   + 摄像机的向上向量
+2. 有了这三个参数，就能计算出一个摄像机的坐标系，通过叉乘。
