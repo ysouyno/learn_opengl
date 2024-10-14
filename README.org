@@ -499,7 +499,7 @@ SortIncludes: false
 
 对 ~sRGB~ 目前没有概念，只知道 ~sRGB~ 空间中存放的是 ~gamma~ 校正后的颜色，这样就引出 ~OpenGL~ 中的 ~sRGB纹理~ 的概念：即当你面对着显示器制作纹理时，这个纹理肯定是在 ~sRGB~ 空间中的，这样很直观，这样制作并保存的纹理就是 ~gamma~ 校正过的，当这个纹理提供给别人使用时，可能再被 ~gamma~ 校正一次，这样就变成了两次 ~gamma~ 校正了，这样效果更亮，就不是所期望的效果了，所以需要重校， ~OpenGL~ 提供了方案来解决这个麻烦，这就是 ~GL_SRGB~ 和 ~GL_SRGB_ALPHA~ 内部纹理格式。
 
-* <2024-10-12 周六> 高级光照.阴影映射
+* <2024-10-12 周六> 高级光照.阴影映射（一）
 
 正式开始学习 ~阴影映射~ ，基于深度测试的代码进行修改，换成了 ~wood.png~ 的皮肤，所以初始状态是这样的：
 
@@ -706,3 +706,36 @@ _顶点着色器中的是纹理坐标，但是没有纹理像素值，所以片�
    + 被观察的目标向量
    + 摄像机的向上向量
 2. 有了这三个参数，就能计算出一个摄像机的坐标系，通过叉乘。
+
+* <2024-10-14 周一> 高级光照.阴影映射（二）
+
+#+begin_src c++
+  glDrawBuffer(GL_NONE);
+  glReadBuffer(GL_NONE);
+#+end_src
+
+文中这两行代码表示：
+#+begin_quote
+告诉 ~OpenGL~ 我们不适用任何颜色数据进行渲染。我们通过将调用 ~glDrawBuffer~ 和 ~glReadBuffer~ 把读和绘制缓冲设置为 ~GL_NONE~ 来做这件事。
+#+end_quote
+
+因为没有颜色缓冲对于帧缓冲是不完整的，在后面进行完整性测试时会失败，所以这里是必需的。
+
+#+begin_src c++
+  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+    std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+   }
+#+end_src
+
+关于深度贴图（ ~Depth Map~ ）流程如下：
+
+1. 创建一个帧缓冲对象，创建一个 ~2D~ 深度纹理，并把生成的深度纹理作为帧缓冲的深度缓冲。
+2. 首先渲染至深度贴图。
+   + 这里就需要以光源的视角了，所以就需要在顶点着色器中将顶点变换到光源。
+   + 这里使用了 ~正交投影矩阵~ 和 ~lookat矩阵~ 。
+3. 最后像往常一样渲染场景，但这次使用的是深度贴图。
+
+我得到了和书中相同的深度贴图：
+
+#+ATTR_HTML: :width 50%
+[[file:files/20241014_0.png]]
