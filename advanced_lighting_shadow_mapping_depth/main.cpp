@@ -75,8 +75,8 @@ int main() {
 
   // build and compile our shader zprogram
   // ------------------------------------
-  Shader simpleDepthShader("5.2.shadow_mapping_depth.vs", "5.2.shadow_mapping_depth.fs");
-  Shader debugDepthQuad("5.2.debug_quad.vs", "5.2.debug_quad_depth.fs");
+  Shader simpleDepthShader("5.3.shadow_mapping_depth.vs", "5.3.shadow_mapping_depth.fs");
+  Shader debugDepthQuad("5.3.debug_quad.vs", "5.3.debug_quad_depth.fs");
 
   // set up vertex data (and buffer(s)) and configure vertex attributes
   // ------------------------------------------------------------------
