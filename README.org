@@ -764,3 +764,33 @@ _顶点着色器中的是纹理坐标，但是没有纹理像素值，所以片�
 
 #+ATTR_HTML: :width 50%
 [[file:files/20241014_1.png]]
+
+** 阴影失真（ ~Shadow Acne~ ）
+
+阴影失真理解起来不太形象，我好奇成因当初是怎么分析出来的？因为 *地板以下* 采样的会出现黑色，所以通过：
+
+#+begin_quote
+一个叫做阴影偏移（ ~shadow bias~ ）的技巧来解决这个问题，我们简单的对表面的深度（或深度贴图）应用一个偏移量，这样片段就不会被错误地认为在表面之下了。
+#+end_quote
+
+#+ATTR_HTML: :width 50%
+[[file:files/shadow_mapping_acne_diagram.png]]
+
+#+ATTR_HTML: :width 50%
+[[file:files/shadow_mapping_acne_bias.png]]
+
+** PCF（ ~percentage-closer filtering~ ）
+
+#+begin_quote
+PCF（ ~percentage-closer filtering~ ），这是一种多个不同过滤方式的组合，它产生柔和阴影，使它们出现更少的锯齿块和硬边。核心思想是从深度贴图中多次采样，每一次采样的纹理坐标都稍有不同。每个独立的样本可能在也可能不再阴影中。所有的次生结果接着结合在一起，进行平均化，我们就得到了柔和阴影。
+#+end_quote
+
+感觉东西越学越多，又出来一个 ~textureSize~ 的 ~opengl~ 函数，它返回一个给定采样器纹理的 ~0~ 级 ~mipmap~ 的 ~vec2~ 类型的宽和高。（这是啥意思？）
+
+回忆：书中讲到的 ~mipmap~ 是在《纹理》那一节中：
+
+#+begin_quote
+~OpenGL~ 使用一种叫做多级渐远纹理（ ~Mipmap~ ）的概念来解决这个问题，它简单来说就是一系列的纹理图像，后一个纹理图像是前一个的二分之一。
+#+end_quote
+
+这里 ~PCF~ 的意思是通过 ~mipmap~ 搞个偏移量，确保每个新样本来自不同的深度值。
