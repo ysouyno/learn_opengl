@@ -53,6 +53,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_lighting_gamma_cor
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_lighting_shadow_mapping_depth", "advanced_lighting_shadow_mapping_depth\advanced_lighting_shadow_mapping_depth.vcxproj", "{D430B312-9C31-4615-9133-F2F9E2410D4E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_lighting_shadow_mapping", "advanced_lighting_shadow_mapping\advanced_lighting_shadow_mapping.vcxproj", "{DD77B503-BA80-4562-B9CB-252F63C4B637}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "getting_started_textures", "getting_started_textures\getting_started_textures.vcxproj", "{F736CC9C-8B35-4DDE-A1AE-A97C44EDAA51}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -159,6 +163,14 @@ Global
 		{D430B312-9C31-4615-9133-F2F9E2410D4E}.Debug|Win32.Build.0 = Debug|Win32
 		{D430B312-9C31-4615-9133-F2F9E2410D4E}.Release|Win32.ActiveCfg = Release|Win32
 		{D430B312-9C31-4615-9133-F2F9E2410D4E}.Release|Win32.Build.0 = Release|Win32
+		{DD77B503-BA80-4562-B9CB-252F63C4B637}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DD77B503-BA80-4562-B9CB-252F63C4B637}.Debug|Win32.Build.0 = Debug|Win32
+		{DD77B503-BA80-4562-B9CB-252F63C4B637}.Release|Win32.ActiveCfg = Release|Win32
+		{DD77B503-BA80-4562-B9CB-252F63C4B637}.Release|Win32.Build.0 = Release|Win32
+		{F736CC9C-8B35-4DDE-A1AE-A97C44EDAA51}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F736CC9C-8B35-4DDE-A1AE-A97C44EDAA51}.Debug|Win32.Build.0 = Debug|Win32
+		{F736CC9C-8B35-4DDE-A1AE-A97C44EDAA51}.Release|Win32.ActiveCfg = Release|Win32
+		{F736CC9C-8B35-4DDE-A1AE-A97C44EDAA51}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
