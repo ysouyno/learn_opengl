@@ -73,8 +73,8 @@ int main() {
   // -----------------------------
   glEnable(GL_DEPTH_TEST);
 
-  // build and compile our shader zprogram
-  // ------------------------------------
+  // build and compile shaders
+  // -------------------------
   Shader simpleDepthShader("5.3.shadow_mapping_depth.vs", "5.3.shadow_mapping_depth.fs");
   Shader debugDepthQuad("5.3.debug_quad.vs", "5.3.debug_quad_depth.fs");
 

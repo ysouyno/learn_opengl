@@ -73,8 +73,9 @@ int main() {
   // -----------------------------
   glEnable(GL_DEPTH_TEST);
 
-  // build and compile our shader zprogram
-  // ------------------------------------
+  // build and compile shaders
+  // -------------------------
+  Shader shader("5.3.shadow_mapping.vs", "5.3.shadow_mapping.fs");
   Shader simpleDepthShader("5.3.shadow_mapping_depth.vs", "5.3.shadow_mapping_depth.fs");
   Shader debugDepthQuad("5.3.debug_quad.vs", "5.3.debug_quad_depth.fs");
 
@@ -133,6 +134,9 @@ int main() {
 
   // shader configuration
   // --------------------
+  shader.use();
+  shader.set_int("diffuseTexture", 0);
+  shader.set_int("shadowMap", 1);
   debugDepthQuad.use();
   debugDepthQuad.set_int("depthMap", 0);
 
@@ -158,7 +162,8 @@ int main() {
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // render depth of scene to texture (from light's perspective)
+    // 见“深度贴图”中描述的那两步操作
+    // 1. render depth of scene to texture (from light's perspective)
     // -----------------------------------------------------------
     glm::mat4 lightProjection, lightView;
     glm::mat4 lightSpaceMatrix;
@@ -181,6 +186,23 @@ int main() {
     glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // 2. render scene as normal using the generated depth/shadow map
+    // --------------------------------------------------------------
+    shader.use();
+    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+    glm::mat4 view = camera.GetViewMatrix();
+    shader.set_mat4("projection", projection);
+    shader.set_mat4("view", view);
+    // set light uniforms
+    shader.set_vec3("viewPos", camera.Position);
+    shader.set_vec3("lightPos", lightPos);
+    shader.set_mat4("lightSpaceMatrix", lightSpaceMatrix);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, cubeTexture);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+    renderScene(shader);
+
     // render Depth map to quad for visual debugging
     // ---------------------------------------------
     debugDepthQuad.use();
@@ -188,7 +210,7 @@ int main() {
     debugDepthQuad.set_float("far_plane", far_plane);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, depthMap);
-    renderQuad();
+    // renderQuad();
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
     // -------------------------------------------------------------------------------
