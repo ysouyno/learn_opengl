@@ -158,10 +158,10 @@ SortIncludes: false
 
 我按照教程一步一步来操作，但没有得到相同的效果：
 
-#+ATTR_HTML: :width 50%
+#+ATTR_HTML: :width 60%
 [[file:files/20240927_0.png]]
 
-#+ATTR_HTML: :width 50%
+#+ATTR_HTML: :width 60%
 [[file:files/20240927_1.png]]
 
 原来在设置 ~material.shininess~ 时变量名拼写错误了，看评论说 ~shininess~ 设置为 ~0~ 时会出现黑色。
@@ -170,15 +170,15 @@ SortIncludes: false
 
 练习的最后一题没有提供答案，我的答案是（上图是参考答案，下图是我的答案）：
 
-#+ATTR_HTML: :width 50%
+#+ATTR_HTML: :width 60%
 [[file:files/20240928_0.png]]
 
-#+ATTR_HTML: :width 50%
+#+ATTR_HTML: :width 60%
 [[file:files/20240928_1.png]]
 
 我是这么修改代码的：
 
-#+ATTR_HTML: :width 80%
+#+ATTR_HTML: :width 60%
 [[file:files/20240928_2.png]]
 
 * <2024-09-28 周六> 光照.投光物.平行光
@@ -336,12 +336,12 @@ SortIncludes: false
 
 哇喔！效果杠杠的。但是这里并没有使用实例化，它用了一个超大的 ~modelMatrices~ 数组来存放小行星的矩阵。最终运行效果：
 
-#+ATTR_HTML: :width 50%
+#+ATTR_HTML: :width 60%
 [[file:files/20241010_0.png]]
 
 使用实例化后产生十万个小行星的效果如下，对于办公室这个电脑稍微有点慢了：
 
-#+ATTR_HTML: :width 50%
+#+ATTR_HTML: :width 60%
 [[file:files/20241010_1.png]]
 
 我不太理解这段代码：
@@ -443,7 +443,7 @@ SortIncludes: false
 
 最后的帧缓冲的有锯齿绘制效果如下：
 
-#+ATTR_HTML: :width 80%
+#+ATTR_HTML: :width 60%
 [[file:files/20241011_0.png]]
 
 * <2024-10-12 周六> 高级 ~OpenGL~ .抗锯齿.离屏 ~MSAA~ （三）
@@ -469,7 +469,7 @@ SortIncludes: false
 
 这是 ~离屏 MSAA~ 的最终效果（可以和上图比较一下抗锯齿效果）：
 
-#+ATTR_HTML: :width 80%
+#+ATTR_HTML: :width 60%
 [[file:files/20241012_0.png]]
 
 补充一下上一小段中提到的这个 ~intermediateFBO~ ，其实它是本节内容中最后部分中描述的要在帧缓冲中实现后期制作效果引入的内容，但是代码我却抄早了。要不然怎么设置应该显示为绿色的立方体显示成了灰色呢！
@@ -478,7 +478,7 @@ SortIncludes: false
 
 按 ~B~ 键来回切换 ~Phong~ 和 ~Blinn-Phong~ 过程中有两块黑色区域一闪而过，不知道这正常不？
 
-#+ATTR_HTML: :width 50%
+#+ATTR_HTML: :width 60%
 [[file:files/20241012_1.gif]]
 
 * <2024-10-12 周六> 高级光照. ~Gamma~ 校正
@@ -503,7 +503,7 @@ SortIncludes: false
 
 正式开始学习 ~阴影映射~ ，基于深度测试的代码进行修改，换成了 ~wood.png~ 的皮肤，所以初始状态是这样的：
 
-#+ATTR_HTML: :width 50%
+#+ATTR_HTML: :width 60%
 [[file:files/20241012_2.png]]
 
 * <2024-10-13 周日> 复习（一）
@@ -520,7 +520,7 @@ SortIncludes: false
 
 这就是 ~NDC~ 坐标系，因为 ~opengl~ 的坐标范围是 ~-1.0~ 至 ~1.0~ ：
 
-#+ATTR_HTML: :width 50%
+#+ATTR_HTML: :width 60%
 [[file:files/ndc.png]]
 
 #+begin_quote
@@ -740,7 +740,7 @@ _顶点着色器中的是纹理坐标，但是没有纹理像素值，所以片�
 
 我得到了和书中相同的深度贴图：
 
-#+ATTR_HTML: :width 50%
+#+ATTR_HTML: :width 60%
 [[file:files/20241014_0.png]]
 
 备注：顶点着色器和片断着色器的文件名从 ~5.2~ 改为 ~5.3~ ，因为 ~5.2~ 节讲的是 ~gamma~ 校正。
@@ -763,7 +763,7 @@ _顶点着色器中的是纹理坐标，但是没有纹理像素值，所以片�
 
 最终代码效果如下：
 
-#+ATTR_HTML: :width 50%
+#+ATTR_HTML: :width 60%
 [[file:files/20241014_1.png]]
 
 ** 阴影失真（ ~Shadow Acne~ ）
@@ -774,10 +774,10 @@ _顶点着色器中的是纹理坐标，但是没有纹理像素值，所以片�
 一个叫做阴影偏移（ ~shadow bias~ ）的技巧来解决这个问题，我们简单的对表面的深度（或深度贴图）应用一个偏移量，这样片段就不会被错误地认为在表面之下了。
 #+end_quote
 
-#+ATTR_HTML: :width 50%
+#+ATTR_HTML: :width 60%
 [[file:files/shadow_mapping_acne_diagram.png]]
 
-#+ATTR_HTML: :width 50%
+#+ATTR_HTML: :width 60%
 [[file:files/shadow_mapping_acne_bias.png]]
 
 ** PCF（ ~percentage-closer filtering~ ）
@@ -900,7 +900,7 @@ PCF（ ~percentage-closer filtering~ ），这是一种多个不同过滤方式�
 
 但是书中只有一份代码，是在法线贴图代码的基础上实现的切线空间，所以我把法线贴图的代码给搞出来了，说明我今天做的对第二章的复习还是有成效。我的代码即 ~advanced_lighting_normal_mapping~ 工程，效果如下：
 
-#+ATTR_HTML: :width 50%
+#+ATTR_HTML: :width 60%
 [[file:files/20241016_0.png]]
 
 暂时不着急进入切线空间的内容，将书中提到的法线贴图关于法线指向的问题搞懂一下，目前还不明白作者在表达什么！
