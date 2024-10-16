@@ -59,6 +59,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "getting_started_textures", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_lighting_point_shadows", "advanced_lighting_point_shadows\advanced_lighting_point_shadows.vcxproj", "{A2FB385C-2B9A-401D-BEB4-EF8D4C98641F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_lighting_normal_mapping", "advanced_lighting_normal_mapping\advanced_lighting_normal_mapping.vcxproj", "{6529EA3B-CE99-45E8-9BA6-1D06E6115E10}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -177,6 +179,10 @@ Global
 		{A2FB385C-2B9A-401D-BEB4-EF8D4C98641F}.Debug|Win32.Build.0 = Debug|Win32
 		{A2FB385C-2B9A-401D-BEB4-EF8D4C98641F}.Release|Win32.ActiveCfg = Release|Win32
 		{A2FB385C-2B9A-401D-BEB4-EF8D4C98641F}.Release|Win32.Build.0 = Release|Win32
+		{6529EA3B-CE99-45E8-9BA6-1D06E6115E10}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6529EA3B-CE99-45E8-9BA6-1D06E6115E10}.Debug|Win32.Build.0 = Debug|Win32
+		{6529EA3B-CE99-45E8-9BA6-1D06E6115E10}.Release|Win32.ActiveCfg = Release|Win32
+		{6529EA3B-CE99-45E8-9BA6-1D06E6115E10}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
