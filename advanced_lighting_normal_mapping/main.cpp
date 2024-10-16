@@ -111,8 +111,10 @@ int main() {
     shader.use();
     shader.set_mat4("projection", projection);
     shader.set_mat4("view", view);
-
+    // render normal-mapped quad
     glm::mat4 model = glm::mat4(1.0f);
+    // rotate the quad to show normal mapping from multiple directions
+    model = glm::rotate(model, glm::radians((float)glfwGetTime() * -10.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
     shader.set_mat4("model", model);
     shader.set_vec3("viewPos", camera.Position);
     shader.set_vec3("lightPos", lightPos);
@@ -120,7 +122,13 @@ int main() {
     glBindTexture(GL_TEXTURE_2D, diffuseMap);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, normalMap);
+    renderQuad();
 
+    // render light source (simply re-renders a smaller plane at the light's position for debugging/visualization)
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, lightPos);
+    model = glm::scale(model, glm::vec3(0.1f));
+    shader.set_mat4("model", model);
     renderQuad();
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
