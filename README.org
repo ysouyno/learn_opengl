@@ -907,4 +907,201 @@ PCF（ ~percentage-closer filtering~ ），这是一种多个不同过滤方式�
 
 * <2024-10-17 周四> 高级光照.法线贴图（二）
 
-这节对我来说太难，公式看不懂，代码看不懂，早上花了一个多小时，依然一头雾水。先放一放吧，代码也等后面看懂了再写。
++这节对我来说太难，公式看不懂，代码看不懂，早上花了一个多小时，依然一头雾水。先放一放吧，代码也等后面看懂了再写+ 。硬上吧！否则接下来的教程《视差贴图》学不了。（评论中有不少人吐槽并举例了翻译的问题，导致翻译过来的不知道在讲什么，看了英文原文才懂。看来我也得看英文原文了）
+
+目前算是看懂了，先了解一下 ~TBN~ 矩阵的用处： _它将法线贴图中的法线坐标左乘 ~TBN~ 矩阵，转换到世界坐标空间中。_ ，什么意思呢？
+
+1. 现在有两个法线向量，一个是原图中的法线向量，一个是贴图中的法线向量，当原图在世界空间中翻转时，它的法线向量是跟着原图的平面在随时变化的，即，始终垂直于原图平面；而贴图中的法线向量是始终指向 ~z~ 方向的（因为这个贴图是蓝色的）。
+2. 先用原图中的法线向量（教程中说的法线，也不知道指哪个法线，整得人很难理解），通过给出的切线空间公式计算出 ~TBN~ 矩阵。
+3. 有了 ~TBN~ 矩阵，就可以把切线坐标空间的向量转换到世界坐标空间。因此我们把它传给片段着色器中，把通过采样得到的法线坐标左乘上 ~TBN~ 矩阵，转换到世界坐标空间中，这样所有法线和其他光照变量就在同一个坐标系中了。
+
+*我们从法线贴图采样得来的法线向量，是在切线空间表示的，尽管其他光照向量都是在世界空间表示的。* 这句话我是这么理解的：切线空间相对于世界空间来说是一个局部空间，该切线坐标系自己再怎么翻转，它的 ~(0, 0, 1)~ 始终还是指向了切线空间的 ~z~ 正方向，因为法线贴图是蓝色，所以采样法线贴图得到的始终是 ~z~ 正方向， *所以采样得到的法线向量是在切线空间中的* 。
+
+书中提供了两种方法：
+
+1. 第一种方法：将切线坐标变换到世界空间中。
+2. 第二种方法：将世界坐标变换到切线空间中。
+
+** 切线坐标变换到世界空间中
+
+这是第一种方法的最终效果：
+
+#+ATTR_HTML: :width 60%
+[[file:files/20241017_0.gif]]
+
+代码就不加入 ~git~ 中了，只记录一下如何修改的：
+
++ 函数 ~renderQuad()~ 中的代码就是按公式计算 ~TBN~ 的坐标并传给顶点着色器（第二种方法也要这么做）
++ 在顶点着色器中将 ~TBN~ 经过 ~model~ 变换到世界空间中，再传给片段着色器。
+
+#+begin_src glsl
+  # version 330 core
+
+  layout (location = 0) in vec3 aPos;
+  layout (location = 1) in vec3 aNormal;
+  layout (location = 2) in vec2 aTexCoords;
+  layout (location = 3) in vec3 aTangent;
+  layout (location = 4) in vec3 aBitangent;
+
+  out VS_OUT {
+    vec3 FragPos;
+    vec2 TexCoords;
+    mat3 TBN;
+  } vs_out;
+
+  uniform mat4 projection;
+  uniform mat4 view;
+  uniform mat4 model;
+  uniform vec3 lightPos;
+  uniform vec3 viewPos;
+
+  void main() {
+    vs_out.FragPos = vec3(model * vec4(aPos, 1.0));
+    vs_out.TexCoords = aTexCoords;
+    vec3 T = normalize(vec3(model * vec4(aTangent, 0.0)));
+    vec3 B = normalize(vec3(model * vec4(aBitangent, 0.0)));
+    vec3 N = normalize(vec3(model * vec4(aNormal, 0.0)));
+    vs_out.TBN = mat3(T, B, N);
+
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
+  }
+#+end_src
+
++ 在片断着色器中将采样到的 ~normal~ 通过 ~TBN~ 变换到世界坐标中运算。
+
+#+begin_src glsl
+  # version 330 core
+
+  out vec4 FragColor;
+
+  in VS_OUT {
+    vec3 FragPos;
+    vec2 TexCoords;
+    mat3 TBN;
+  } fs_in;
+
+  uniform sampler2D diffuseMap;
+  uniform sampler2D normalMap;
+  uniform vec3 lightPos;
+  uniform vec3 viewPos;
+
+  void main() {
+    // obtain normal from normal map in range [0, 1]
+    vec3 normal = texture(normalMap, fs_in.TexCoords).rgb;
+    // transform normal vector to range [-1, 1];
+    normal = normalize(normal * 2.0 - 1.0);
+    normal = normalize(fs_in.TBN * normal);
+
+    // get diffuse color
+    vec3 color = texture(diffuseMap, fs_in.TexCoords).rgb;
+    // ambient
+    vec3 ambient = 0.1 * color;
+    // diffuse
+    vec3 lightDir = normalize(lightPos - fs_in.FragPos);
+    float diff = max(dot(lightDir, normal), 0.0);
+    vec3 diffuse = diff * color;
+    // specular
+    vec3 viewDir = normalize(viewPos - fs_in.FragPos);
+    vec3 reflectDir = reflect(-lightDir, normal);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
+
+    vec3 specular = vec3(0.2) * spec;
+    FragColor = vec4(ambient + diffuse + specular, 1.0);
+  }
+#+end_src
+
+** 世界坐标变换到切线空间中
+
+第二种方法的效果同第一种，我看不出区别，但是可能像书中所说那样：
+
+#+begin_quote
+这是一个极佳的优化，因为顶点着色器通常比像素着色器运行的少。
+#+end_quote
+
++ 顶点着色器目前代码：
+
+#+begin_src glsl
+  # version 330 core
+
+  layout (location = 0) in vec3 aPos;
+  layout (location = 1) in vec3 aNormal;
+  layout (location = 2) in vec2 aTexCoords;
+  layout (location = 3) in vec3 aTangent;
+  layout (location = 4) in vec3 aBitangent;
+
+  out VS_OUT {
+    vec3 FragPos;
+    vec2 TexCoords;
+    vec3 TangentLightPos;
+    vec3 TangentViewPos;
+    vec3 TangentFragPos;
+  } vs_out;
+
+  uniform mat4 projection;
+  uniform mat4 view;
+  uniform mat4 model;
+
+  uniform vec3 lightPos;
+  uniform vec3 viewPos;
+
+  void main() {
+    vs_out.FragPos = vec3(model * vec4(aPos, 1.0));
+    vs_out.TexCoords = aTexCoords;
+
+    vec3 T = normalize(vec3(model * vec4(aTangent, 0.0)));
+    vec3 B = normalize(vec3(model * vec4(aBitangent, 0.0)));
+    vec3 N = normalize(vec3(model * vec4(aNormal, 0.0)));
+    mat3 TBN = transpose(mat3(T, B, N));
+    vs_out.TangentLightPos = TBN * lightPos;
+    vs_out.TangentViewPos = TBN * viewPos;
+    vs_out.TangentFragPos = TBN * vec3(model * vec4(aPos, 1.0));
+
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
+  }
+#+end_src
+
++ 片段着色器目前代码：
+
+#+begin_src glsl
+  # version 330 core
+
+  out vec4 FragColor;
+
+  in VS_OUT {
+    vec3 FragPos;
+    vec2 TexCoords;
+    vec3 TangentLightPos;
+    vec3 TangentViewPos;
+    vec3 TangentFragPos;
+  } fs_in;
+
+  uniform sampler2D diffuseMap;
+  uniform sampler2D normalMap;
+  uniform vec3 lightPos;
+  uniform vec3 viewPos;
+
+  void main() {
+    // obtain normal from normal map in range [0, 1]
+    vec3 normal = texture(normalMap, fs_in.TexCoords).rgb;
+    // transform normal vector to range [-1, 1];
+    normal = normalize(normal * 2.0 - 1.0);
+
+    // get diffuse color
+    vec3 color = texture(diffuseMap, fs_in.TexCoords).rgb;
+    // ambient
+    vec3 ambient = 0.1 * color;
+    // diffuse
+    vec3 lightDir = normalize(fs_in.TangentLightPos - fs_in.TangentFragPos);
+    float diff = max(dot(lightDir, normal), 0.0);
+    vec3 diffuse = diff * color;
+    // specular
+    vec3 viewDir = normalize(fs_in.TangentViewPos - fs_in.TangentFragPos);
+    vec3 reflectDir = reflect(-lightDir, normal);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
+
+    vec3 specular = vec3(0.2) * spec;
+    FragColor = vec4(ambient + diffuse + specular, 1.0);
+  }
+#+end_src
