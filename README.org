@@ -1137,6 +1137,8 @@ PCF（ ~percentage-closer filtering~ ），这是一种多个不同过滤方式�
 
 这里读的是英文原文，确实比翻译的好懂，这里完全是在上节法线贴图的基础上稍微加点修改完成的，重点是要理解法线空间。
 
+** 视差贴图
+
 #+ATTR_HTML: :width 60%
 [[file:files/parallax_mapping_scaled_height.png]]
 
@@ -1155,6 +1157,94 @@ PCF（ ~percentage-closer filtering~ ），这是一种多个不同过滤方式�
 #+end_src
 
 最后浏览了一下 ~陡峭视差映射~ 和 ~视差遮蔽映射~ 原理也不难，全部都在片段着色器中进行。总的来说，重点还是上节的法线贴图，理解好它的切线空间，到这里的视差贴图就完全没有压力了。
+
+** 陡峭视差映射（ ~Steep Parallax Mapping~ ）
+
+正面看上去效果确实不错，但是侧面看即明显看出有分层的现象：
+
+#+ATTR_HTML: :width 60%
+[[file:files/20241020_0.png]]
+
+#+ATTR_HTML: :width 60%
+[[file:files/20241020_1.png]]
+
+当前片段着色器代码如下：
+
+#+begin_src glsl
+  # version 330 core
+
+  out vec4 FragColor;
+
+  in VS_OUT {
+    vec3 FragPos;
+    vec2 TexCoords;
+    vec3 TangentLightPos;
+    vec3 TangentViewPos;
+    vec3 TangentFragPos;
+  } fs_in;
+
+  uniform sampler2D diffuseMap;
+  uniform sampler2D normalMap;
+  uniform sampler2D depthMap;
+  uniform float heightScale;
+
+  vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {
+    // number of depth layers
+    const float numLayers = 10;
+    // calcuate the size of each layer
+    float layerDepth = 1.0 / numLayers;
+    // depth of current layer
+    float currentLayerDepth = 0.0;
+    // the amount to shift the texture coordinates per layer (from vector p)
+    vec2 P = viewDir.xy * heightScale;
+    vec2 deltaTexCoords = P / numLayers;
+    // get initial values
+    vec2 currentTexCoords = texCoords;
+    float currentDepthMapValue = texture(depthMap, currentTexCoords).r;
+
+    while (currentLayerDepth < currentDepthMapValue) {
+      // shift texture coordinates along direction of P
+      currentTexCoords -= deltaTexCoords;
+      // get depthmap value at current texture coordinates
+      currentDepthMapValue = texture(depthMap, currentTexCoords).r;
+      // get depth of next layer
+      currentLayerDepth += layerDepth;
+    }
+
+    return currentTexCoords;
+  }
+
+  void main() {
+    // offset texture coordinates with Parallax Mapping
+    vec3 viewDir = normalize(fs_in.TangentViewPos - fs_in.TangentFragPos);
+    vec2 texCoords = ParallaxMapping(fs_in.TexCoords, viewDir);
+    texCoords = ParallaxMapping(fs_in.TexCoords,  viewDir);
+    if(texCoords.x > 1.0 || texCoords.y > 1.0 || texCoords.x < 0.0 || texCoords.y < 0.0)
+      discard;
+
+    // 接下来的所有采样使用 texCoords，而不是 fs_in.TexCoords
+    // obtain normal from normal map in range [0, 1]
+    vec3 normal = texture(normalMap, texCoords).rgb;
+    // transform normal vector to range [-1, 1];
+    normal = normalize(normal * 2.0 - 1.0);
+
+    // get diffuse color
+    vec3 color = texture(diffuseMap, texCoords).rgb;
+    // ambient
+    vec3 ambient = 0.1 * color;
+    // diffuse
+    vec3 lightDir = normalize(fs_in.TangentLightPos - fs_in.TangentFragPos);
+    float diff = max(dot(lightDir, normal), 0.0);
+    vec3 diffuse = diff * color;
+    // specular
+    vec3 reflectDir = reflect(-lightDir, normal);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
+
+    vec3 specular = vec3(0.2) * spec;
+    FragColor = vec4(ambient + diffuse + specular, 1.0);
+  }
+#+end_src
 
 * <2024-10-18 周五> 高级光照. ~HDR~
 

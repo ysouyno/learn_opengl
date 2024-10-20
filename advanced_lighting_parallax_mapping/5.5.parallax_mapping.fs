@@ -16,16 +16,38 @@ uniform sampler2D depthMap;
 uniform float heightScale;
 
 vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir) {
-  // 参数 texCoords 对应插图的 A 点
-  float height = texture(depthMap, texCoords).r;
-  vec2 p = viewDir.xy / viewDir.z * (height * heightScale);
-  return texCoords - p;
+  // number of depth layers
+  const float numLayers = 10;
+  // calcuate the size of each layer
+  float layerDepth = 1.0 / numLayers;
+  // depth of current layer
+  float currentLayerDepth = 0.0;
+  // the amount to shift the texture coordinates per layer (from vector p)
+  vec2 P = viewDir.xy * heightScale;
+  vec2 deltaTexCoords = P / numLayers;
+  // get initial values
+  vec2 currentTexCoords = texCoords;
+  float currentDepthMapValue = texture(depthMap, currentTexCoords).r;
+
+  while (currentLayerDepth < currentDepthMapValue) {
+    // shift texture coordinates along direction of P
+    currentTexCoords -= deltaTexCoords;
+    // get depthmap value at current texture coordinates
+    currentDepthMapValue = texture(depthMap, currentTexCoords).r;
+    // get depth of next layer
+    currentLayerDepth += layerDepth;
+  }
+
+  return currentTexCoords;
 }
 
 void main() {
   // offset texture coordinates with Parallax Mapping
   vec3 viewDir = normalize(fs_in.TangentViewPos - fs_in.TangentFragPos);
   vec2 texCoords = ParallaxMapping(fs_in.TexCoords, viewDir);
+  texCoords = ParallaxMapping(fs_in.TexCoords,  viewDir);
+  if(texCoords.x > 1.0 || texCoords.y > 1.0 || texCoords.x < 0.0 || texCoords.y < 0.0)
+    discard;
 
   // 接下来的所有采样使用 texCoords，而不是 fs_in.TexCoords
   // obtain normal from normal map in range [0, 1]
