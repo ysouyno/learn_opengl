@@ -63,6 +63,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_lighting_normal_ma
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_lighting_parallax_mapping", "advanced_lighting_parallax_mapping\advanced_lighting_parallax_mapping.vcxproj", "{E9C64909-CC36-4D61-B84D-16921431B907}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_lighting_hdr", "advanced_lighting_hdr\advanced_lighting_hdr.vcxproj", "{1C519AA2-4EC9-4A15-9C86-47D67037324F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -189,6 +191,10 @@ Global
 		{E9C64909-CC36-4D61-B84D-16921431B907}.Debug|Win32.Build.0 = Debug|Win32
 		{E9C64909-CC36-4D61-B84D-16921431B907}.Release|Win32.ActiveCfg = Release|Win32
 		{E9C64909-CC36-4D61-B84D-16921431B907}.Release|Win32.Build.0 = Release|Win32
+		{1C519AA2-4EC9-4A15-9C86-47D67037324F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1C519AA2-4EC9-4A15-9C86-47D67037324F}.Debug|Win32.Build.0 = Debug|Win32
+		{1C519AA2-4EC9-4A15-9C86-47D67037324F}.Release|Win32.ActiveCfg = Release|Win32
+		{1C519AA2-4EC9-4A15-9C86-47D67037324F}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

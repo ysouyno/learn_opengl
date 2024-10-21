@@ -20,6 +20,9 @@ void renderQuad();
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
+bool hdr = true;
+bool hdrKeyPressed = false;
+float exposure = 1.0f;
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 5.0f));
@@ -71,8 +74,9 @@ int main() {
   glEnable(GL_DEPTH_TEST);
 
   Shader shader("5.6.lighting.vs", "5.6.lighting.fs");
+  Shader hdrShader("5.6.hdr.vs", "5.6.hdr.fs");
 
-  unsigned int woodTexture = loadTexture("wood.png", false);
+  unsigned int woodTexture = loadTexture("wood.png", true);
 
   // configure floating point framebuffer
   // ------------------------------------
@@ -102,10 +106,10 @@ int main() {
   // -------------
   // positions
   std::vector<glm::vec3> lightPositions;
-  lightPositions.push_back(glm::vec3( 0.0f,  0.0f, 49.5f)); // back light
+  lightPositions.push_back(glm::vec3(0.0f, 0.0f, 49.5f)); // back light
   lightPositions.push_back(glm::vec3(-1.4f, -1.9f, 9.0f));
-  lightPositions.push_back(glm::vec3( 0.0f, -1.8f, 4.0f));
-  lightPositions.push_back(glm::vec3( 0.8f, -1.7f, 6.0f));
+  lightPositions.push_back(glm::vec3(0.0f, -1.8f, 4.0f));
+  lightPositions.push_back(glm::vec3(0.8f, -1.7f, 6.0f));
   // colors
   std::vector<glm::vec3> lightColors;
   lightColors.push_back(glm::vec3(200.0f, 200.0f, 200.0f));
@@ -115,6 +119,8 @@ int main() {
 
   shader.use();
   shader.set_int("diffuseTexture", 0);
+  hdrShader.use();
+  hdrShader.set_int("hdrBuffer", 0);
 
   // render loop
   // -----------
@@ -149,11 +155,11 @@ int main() {
     for (unsigned int i = 0; i < lightPositions.size(); ++i) {
       const int len = 64;
 
-      char buf0[len] = {0};
+      char buf0[len] = { 0 };
       sprintf_s(buf0, "lights[%d].Position", i);
       shader.set_vec3(buf0, lightPositions[i]);
 
-      char buf1[len] = {0};
+      char buf1[len] = { 0 };
       sprintf_s(buf1, "lights[%d].Color", i);
       shader.set_vec3(buf1, lightColors[i]);
     }
@@ -163,10 +169,22 @@ int main() {
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 25.0));
     model = glm::scale(model, glm::vec3(2.5f, 2.5f, 27.5f));
     shader.set_mat4("model", model);
+    shader.set_int("inverse_normals", true);
+    renderCube();
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    renderCube();
+
+    // 2. now render floating point color buffer to 2D quad and tonemap HDR colors to default framebuffer's (clamped) color range
+    // --------------------------------------------------------------------------------------------------------------------------
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    hdrShader.use();
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, colorBuffer);
+    hdrShader.set_int("hdr", hdr);
+    hdrShader.set_float("exposure", exposure);
     renderQuad();
+
+    std::cout << "hdr: " << (hdr ? "on" : "off") << " | exposure: " << exposure << '\n';
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
     // -------------------------------------------------------------------------------
@@ -300,6 +318,24 @@ void processInput(GLFWwindow* window)
     camera.ProcessKeyboard(LEFT, deltaTime);
   if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     camera.ProcessKeyboard(RIGHT, deltaTime);
+
+  if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !hdrKeyPressed) {
+    hdr = !hdr;
+    hdrKeyPressed = true;
+  }
+  if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE) {
+    hdrKeyPressed = false;
+  }
+
+  if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+    if (exposure > 0.0f)
+      exposure -= 0.001f;
+    else
+      exposure = 0.0f;
+  }
+  else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+    exposure += 0.001f;
+  }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
