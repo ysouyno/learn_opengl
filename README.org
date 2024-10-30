@@ -1335,6 +1335,9 @@ PCF（ ~percentage-closer filtering~ ），这是一种多个不同过滤方式�
 + 在调用 ~renderQuad();~ 之前的代码 ~glBindTexture(GL_TEXTURE_2D, colorBuffers[1]);~ 可以修改显示哪个帧缓冲
   - 使用 ~colorBuffers[0]~ 就是显示 ~GL_COLOR_ATTACHMENT0~ 。
   - 使用 ~colorBuffers[1]~ 就是显示 ~GL_COLOR_ATTACHMENT1~ 。
++ 即片段着色器中
+  - 编号 ~location = 0~ 的 ~FragColor~ 输出的颜色对应于 ~GL_COLOR_ATTACHMENT0~ 的帧缓冲。
+  - 编号 ~location = 1~ 的 ~BrightColor~ 输出的颜色对应于 ~GL_COLOR_ATTACHMENT1~ 的帧缓冲。
 
 但是我的效果跟书中的有点不太一样，第一张是书中的图，第二张是我的图：
 
@@ -1343,3 +1346,8 @@ PCF（ ~percentage-closer filtering~ ），这是一种多个不同过滤方式�
 
 #+ATTR_HTML: :width 60%
 [[file:files/20241030_1.png]]
+
+原来如此，我只处理了灯光的片段着色器而没有处理物体的片段着色器，所以才导致与书中的图效果不一样。经过修改，已达到和书中的效果一致：
+
+#+ATTR_HTML: :width 60%
+[[file:files/20241030_2.png]]
