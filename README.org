@@ -1351,3 +1351,10 @@ PCF（ ~percentage-closer filtering~ ），这是一种多个不同过滤方式�
 
 #+ATTR_HTML: :width 60%
 [[file:files/20241030_2.png]]
+
+** 高斯模糊
+
+怎么感觉我的模糊效果颠倒了，光源没有模糊，箱子却模糊了：
+
+#+ATTR_HTML: :width 60%
+[[file:files/20241030_3.png]]
