@@ -1311,3 +1311,18 @@ PCF（ ~percentage-closer filtering~ ），这是一种多个不同过滤方式�
 ** 浮点帧缓冲
 
 ~GL_RGB~ 颜色值被限制在了 ~0.0~ 到 ~1.0~ 之间，当一个帧缓冲的颜色缓冲的内部格式被设定成了 ~GL_RGB16F~ ， ~GL_RGBA16F~ ， ~GL_RGB32F~ 或者 ~GL_RGBA32F~ 时，这些帧缓冲被叫做浮点帧缓冲（ ~Floating Point Framebuffer~ ），浮点帧缓冲可以存储超过 ~0.0~ 到 ~1.0~ 范围的浮点值，所以非常适合 ~HDR~ 渲染。
+
+* <2024-10-30 周三> 高级光照.泛光
+
+书中并没有给出阶段代码，用 ~HDR~ 实现的泛光的原始场景，我在 ~advanced_lighting_hdr~ 的基础上实现了，效果如下：
+
+#+ATTR_HTML: :width 60%
+[[file:files/20241030_0.png]]
+
+我现在才算真正理解帧缓冲的整个流程：
+
+1. 帧缓冲对象 ~hdrFBO~ 的颜色缓冲 ~colorBuffer~ 是最终从 ~0~ 渲染至 ~Framebuffer~ 的媒介。
+2. 在主循环中绘制时，所有操作都渲染至帧缓冲中。
+3. 然后调用 ~glBindFramebuffer(GL_FRAMEBUFFER, 0);~ 将接下来的操作渲染至默认环境中。
+4. 然后将帧缓冲的颜色缓冲 ~colorBuffer~ 作为片段着色器的纹理渲染至默认环境中。
+5. ~renderQuad~ 函数其实就是将整个纹理全渲染至默认环境中。
