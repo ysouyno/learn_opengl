@@ -20,8 +20,8 @@ void renderQuad();
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-bool hdr = true;
-bool hdrKeyPressed = false;
+bool bloom = true;
+bool bloomKeyPressed = false;
 float exposure = 1.0f;
 
 // camera
@@ -76,6 +76,7 @@ int main() {
   Shader shader("5.7.bloom.vs", "5.7.bloom.fs");
   Shader shaderLight("5.7.bloom.vs", "5.7.lighting.fs");
   Shader shaderBlur("5.7.blur.vs", "5.7.blur.fs");
+  Shader shaderBloomFinal("5.7.bloom_final.vs", "5.7.bloom_final.fs");
 
   unsigned int woodTexture = loadTexture("wood.png", true);
   unsigned int containerTexture = loadTexture("container2.png", true);
@@ -149,6 +150,9 @@ int main() {
   shader.set_int("diffuseTexture", 0);
   shaderBlur.use();
   shaderBlur.set_int("image", 0);
+  shaderBloomFinal.use();
+  shaderBloomFinal.set_int("scene", 0);
+  shaderBloomFinal.set_int("bloomBlur", 1);
 
   // render loop
   // -----------
@@ -274,12 +278,16 @@ int main() {
     // 3. now render floating point color buffer to 2D quad and tonemap HDR colors to default framebuffer's (clamped) color range
     // --------------------------------------------------------------------------------------------------------------------------
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    shaderBlur.use();
-    // glActiveTexture(GL_TEXTURE0);
-    // glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
+    shaderBloomFinal.use();
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
+    shaderBloomFinal.set_int("bloom", bloom);
+    shaderBloomFinal.set_float("exposure", exposure);
     renderQuad();
+
+    std::cout << "bloom: " << (bloom ? "on" : "off") << " | exposure: " << exposure << '\n';
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
     // -------------------------------------------------------------------------------
@@ -414,12 +422,12 @@ void processInput(GLFWwindow* window)
   if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     camera.ProcessKeyboard(RIGHT, deltaTime);
 
-  if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !hdrKeyPressed) {
-    hdr = !hdr;
-    hdrKeyPressed = true;
+  if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !bloomKeyPressed) {
+    bloom = !bloom;
+    bloomKeyPressed = true;
   }
   if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE) {
-    hdrKeyPressed = false;
+    bloomKeyPressed = false;
   }
 
   if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {

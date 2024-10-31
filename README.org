@@ -1327,11 +1327,11 @@ PCF（ ~percentage-closer filtering~ ），这是一种多个不同过滤方式�
 4. 然后将帧缓冲的颜色缓冲 ~colorBuffer~ 作为片段着色器的纹理渲染至默认环境中。
 5. ~renderQuad~ 函数其实就是将整个纹理全渲染至默认环境中。
 
-** 提取亮度
+** 提取亮色
 
 有必要对当前代码做一下解释：
 
-+ 当前有两个帧缓冲，分别是 ~GL_COLOR_ATTACHMENT0~ 和 ~GL_COLOR_ATTACHMENT1~ ，前者是正常显示，后者是提取亮度。
++ 当前有两个帧缓冲，分别是 ~GL_COLOR_ATTACHMENT0~ 和 ~GL_COLOR_ATTACHMENT1~ ，前者是正常显示，后者是提取亮色。
 + 在调用 ~renderQuad();~ 之前的代码 ~glBindTexture(GL_TEXTURE_2D, colorBuffers[1]);~ 可以修改显示哪个帧缓冲
   - 使用 ~colorBuffers[0]~ 就是显示 ~GL_COLOR_ATTACHMENT0~ 。
   - 使用 ~colorBuffers[1]~ 就是显示 ~GL_COLOR_ATTACHMENT1~ 。
@@ -1359,7 +1359,34 @@ PCF（ ~percentage-closer filtering~ ），这是一种多个不同过滤方式�
 #+ATTR_HTML: :width 60%
 [[file:files/20241030_3.png]]
 
+箱子模糊的问题找到了，因为我的代码箱子的着色器是 ~shaderBlur~ ，它的输出变量 ~FragColor~ 进行了高斯模糊，所以箱子模糊了，而光源用的着色器是 ~shaderLight~ ，但是这里不能在 ~shaderLight~ 中处理高斯模糊，处理高斯模糊是在颜色缓冲中做的，这里有两个颜色缓冲，提取亮色的缓冲是 ~colorBuffers[1]~ ，这样流程就清晰了吧！
+
 在 ~pingpongColorbuffers[!horizontal]~ 这个颜色缓冲中存放的就是高斯模糊的图像，我把它单独显示出来：
 
 #+ATTR_HTML: :width 60%
 [[file:files/20241031_0.png]]
+
+** 把两个纹理混合
+
+这里使用了新的着色器 ~shaderBloomFinal~ ，这里也没有对 ~FragColor~ 进行模糊处理，它设置了两个纹理：
+
+#+begin_src c++
+  shaderBloomFinal.use();
+  shaderBloomFinal.set_int("scene", 0);
+  shaderBloomFinal.set_int("bloomBlur", 1);
+#+end_src
+
+分别对应 ~colorBuffers~ 和 ~pingpongColorbuffers~ ，代码中即：
+
+#+begin_src c++
+  shaderBloomFinal.use();
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
+  glActiveTexture(GL_TEXTURE1);
+  glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
+#+end_src
+
+所以最终的效果是：
+
+#+ATTR_HTML: :width 60%
+[[file:files/20241031_1.gif]]
