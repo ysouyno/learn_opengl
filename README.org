@@ -1358,3 +1358,8 @@ PCF（ ~percentage-closer filtering~ ），这是一种多个不同过滤方式�
 
 #+ATTR_HTML: :width 60%
 [[file:files/20241030_3.png]]
+
+在 ~pingpongColorbuffers[!horizontal]~ 这个颜色缓冲中存放的就是高斯模糊的图像，我把它单独显示出来：
+
+#+ATTR_HTML: :width 60%
+[[file:files/20241031_0.png]]
