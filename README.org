@@ -1390,3 +1390,82 @@ PCF（ ~percentage-closer filtering~ ），这是一种多个不同过滤方式�
 
 #+ATTR_HTML: :width 60%
 [[file:files/20241031_1.gif]]
+
+* <2024-11-07 周四> 高级光照.延迟着色法（一）
+
+** ~G~ 缓冲
+
+从文章了解到 ~G~ 缓冲可以包括如下几个颜色缓冲：
+
+#+ATTR_HTML: :width 60%
+[[file:files/deferred_g_buffer.png]]
+
+我想实现一下，所以思路是：
+
+1. 首先要有两个 ~shader~ ：
+   + 一个负责在 ~framebuffer~ 中生成上面的四个颜色缓冲。
+   + 一个负责从 ~framebuffer~ 取颜色纹理渲染至窗口。
+2. 使用多渲染目标（ ~Multiple Render Targets~ ，即 ~MRT~ ）技术。
+
+我用的是第二个 ~shader~ 是 ~debug.vs~ 和 ~debug.fs~ ：
+
+#+begin_src glsl
+  # version 330 core
+
+  layout (location = 0) in vec3 aPos;
+  layout (location = 1) in vec2 aTexCoords;
+
+  out vec2 TexCoords;
+
+  void main() {
+    gl_Position = vec4(aPos, 1.0f);
+    TexCoords = aTexCoords;
+  }
+#+end_src
+
+#+begin_src glsl
+  # version 330 core
+
+  out vec4 PosColor;
+  out vec4 NormalColor;
+  in vec2 TexCoords;
+
+  uniform sampler2D positionTexture;
+  uniform sampler2D normalTexture;
+
+  void main() {
+    vec3 color = texture(positionTexture, TexCoords).rgb;
+    PosColor = vec4(color, 1.0f);
+    float highlight = texture(normalTexture, TexCoords).a;
+    NormalColor = vec4(highlight, highlight, highlight, 1.0f);
+  }
+#+end_src
+
+#+begin_src c++
+  debugShader.use();
+  debugShader.set_int("gPosition", 0);
+  debugShader.set_int("gNormal", 1);
+
+  // show position/normal/albedospec color buffer
+  // glDisable(GL_DEPTH_TEST);
+  debugShader.use();
+  glViewport(0, 0, SCR_WIDTH / 2, SCR_HEIGHT / 2);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, gPosition);
+  renderQuad();
+  glViewport(SCR_WIDTH / 2, 0, SCR_WIDTH / 2, SCR_HEIGHT / 2);
+  glActiveTexture(GL_TEXTURE1);
+  glBindTexture(GL_TEXTURE_2D, gNormal);
+  renderQuad();
+  glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT); // 注意这里 <---
+#+end_src
+
+注意 ~glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);~ 必须要添加上，如果没有它，将会显示：
+
+#+ATTR_HTML: :width 60%
+[[file:files/20241107_0.png]]
+
+虽然效果不对，但是感觉就快接近成功了，目前效果：
+
+#+ATTR_HTML: :width 60%
+[[file:files/20241107_1.png]]

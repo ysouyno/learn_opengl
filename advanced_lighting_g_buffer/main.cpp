@@ -72,6 +72,7 @@ int main() {
   glEnable(GL_DEPTH_TEST);
 
   Shader shader("5.8.g_buffer.vs", "5.8.g_buffer.fs");
+  Shader debugShader("5.8.debug.vs", "5.8.debug.fs");
 
   // load models
   // -----------
@@ -152,6 +153,10 @@ int main() {
   shader.set_int("gNormal", 1);
   shader.set_int("gAlbedoSpec", 2);
 
+  debugShader.use();
+  debugShader.set_int("gPosition", 0);
+  debugShader.set_int("gNormal", 1);
+
   // render loop
   // -----------
   while (!glfwWindowShouldClose(window)) {
@@ -172,7 +177,7 @@ int main() {
 
     // 1. geometry pass: render scene's geometry/color data into gbuffer
     // -----------------------------------------------------------------
-    // glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (GLfloat)SCR_WIDTH / (GLfloat)SCR_HEIGHT, 0.1f, 100.0f);
     glm::mat4 view = camera.GetViewMatrix();
@@ -192,6 +197,19 @@ int main() {
 
     // 2. lighting pass: calculate lighting by iterating over a screen filled quad pixel-by-pixel using the gbuffer's content.
     // -----------------------------------------------------------------------------------------------------------------------
+
+    // show position/normal/albedospec color buffer
+    // glDisable(GL_DEPTH_TEST);
+    debugShader.use();
+    glViewport(0, 0, SCR_WIDTH / 2, SCR_HEIGHT / 2);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, gPosition);
+    renderQuad();
+    glViewport(SCR_WIDTH / 2, 0, SCR_WIDTH / 2, SCR_HEIGHT / 2);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, gNormal);
+    renderQuad();
+    glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
     // -------------------------------------------------------------------------------
