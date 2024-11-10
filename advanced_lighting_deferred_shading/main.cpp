@@ -71,7 +71,8 @@ int main() {
   // -----------------------------
   glEnable(GL_DEPTH_TEST);
 
-  Shader shader("5.8.g_buffer.vs", "5.8.g_buffer.fs");
+  Shader shaderGeometryPass("5.8.g_buffer.vs", "5.8.g_buffer.fs");
+  Shader shaderLightingPass("5.8.deferred_shading.vs", "5.8.deferred_shading.fs");
   Shader debugShader("5.8.debug.vs", "5.8.debug.fs");
 
   // load models
@@ -148,10 +149,10 @@ int main() {
     lightColors.push_back(glm::vec3(rColor, gColor, bColor));
   }
 
-  debugShader.use();
-  debugShader.set_int("gPosition", 0);
-  debugShader.set_int("gNormal", 1);
-  debugShader.set_int("gAlbedoSpec", 2);
+  shaderLightingPass.use();
+  shaderLightingPass.set_int("gPosition", 0);
+  shaderLightingPass.set_int("gNormal", 1);
+  shaderLightingPass.set_int("gAlbedoSpec", 2);
 
   // render loop
   // -----------
@@ -178,25 +179,63 @@ int main() {
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (GLfloat)SCR_WIDTH / (GLfloat)SCR_HEIGHT, 0.1f, 100.0f);
     glm::mat4 view = camera.GetViewMatrix();
     glm::mat4 model = glm::mat4(1.0f);
-    shader.use();
-    shader.set_mat4("projection", projection);
-    shader.set_mat4("view", view);
-    for (unsigned int i = 0; i < objectPositions.size(); i++)
-    {
+    shaderGeometryPass.use();
+    shaderGeometryPass.set_mat4("projection", projection);
+    shaderGeometryPass.set_mat4("view", view);
+    for (unsigned int i = 0; i < objectPositions.size(); i++) {
       model = glm::mat4(1.0f);
       model = glm::translate(model, objectPositions[i]);
       model = glm::scale(model, glm::vec3(0.5f));
-      shader.set_mat4("model", model);
-      nanosuit.Draw(shader);
+      shaderGeometryPass.set_mat4("model", model);
+      nanosuit.Draw(shaderGeometryPass);
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // 2. lighting pass: calculate lighting by iterating over a screen filled quad pixel-by-pixel using the gbuffer's content.
     // -----------------------------------------------------------------------------------------------------------------------
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    shaderLightingPass.use();
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, gPosition);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, gNormal);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
+    // send light relevant uniforms
+    for (unsigned int i = 0; i < lightPositions.size(); ++i) {
+      char sz[64] = { 0 };
+      sprintf_s(sz, "lights[%d].Position", i);
+      shaderLightingPass.set_vec3(sz, lightPositions[i]);
+      sprintf_s(sz, "lights[%d].Color", i);
+      shaderLightingPass.set_vec3(sz, lightColors[i]);
+
+      // update attenuation parameters and calculate radius
+      const float linear = 0.7f;
+      const float quadratic = 1.8f;
+      sprintf_s(sz, "lights[%d].Linear", i);
+      shaderLightingPass.set_float(sz, linear);
+      sprintf_s(sz, "lights[%d].Quadratic", i);
+      shaderLightingPass.set_float(sz, quadratic);
+    }
+    shaderLightingPass.set_vec3("viewPos", camera.Position);
+    renderQuad();
+
+    // 2.5 copy content of geometry's depth buffer to default framebuffer's depth buffer
+    // ---------------------------------------------------------------------------------
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    // blit to default framebuffer. Note that this may or may not work as the internal
+    // formats of both the FBO and default framebuffer have to match. the internal
+    // formats are implementation defined. This works on all of my systems, but if
+    // it doesn't on yours you'll likely have to write to the depth buffer in another
+    // shader stage (or somehow see to match the default framebuffer's internal format
+    // with the FBO's internal format).
+    glBlitFramebuffer(0, 0, SCR_WIDTH, SCR_HEIGHT, 0, 0, SCR_WIDTH, SCR_HEIGHT, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // show position/normal/albedospec color buffer
     // glDisable(GL_DEPTH_TEST);
-    debugShader.use();
+    /*debugShader.use();
     glActiveTexture(GL_TEXTURE0);
     glViewport(0, SCR_HEIGHT / 2, SCR_WIDTH / 2, SCR_HEIGHT / 2);
     glBindTexture(GL_TEXTURE_2D, gPosition);
@@ -207,7 +246,7 @@ int main() {
     glViewport(0, 0, SCR_WIDTH / 2, SCR_HEIGHT / 2);
     glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
     renderQuad();
-    glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+    glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);*/
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
     // -------------------------------------------------------------------------------

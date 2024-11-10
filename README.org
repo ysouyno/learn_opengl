@@ -1486,3 +1486,12 @@ PCF（ ~percentage-closer filtering~ ），这是一种多个不同过滤方式�
 
 #+ATTR_HTML: :width 60%
 [[file:files/20241110_1.png]]
+
+** 延迟光照处理阶段
+
+目前我还没有理解，在帧缓冲里就这么增加了几个颜色缓冲，就实现延迟光照了？
+
+当前代码效果：
+
+#+ATTR_HTML: :width 60%
+[[file:files/20241110_2.png]]
