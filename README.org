@@ -1481,3 +1481,8 @@ PCF（ ~percentage-closer filtering~ ），这是一种多个不同过滤方式�
 
 1. ~deubgShader~ 的 ~GL_TEXTURE0~ 本就可以代表整个窗口的纹理。
 2. 所有的绘制不能再绘制到第二个纹理中了，比如上节代码中的多增加的这个 ~GL_TEXTURE1~ 纹理就导致了没有效果。
+
+对代码做了一些小小的优化，最终效果如下：
+
+#+ATTR_HTML: :width 60%
+[[file:files/20241110_1.png]]

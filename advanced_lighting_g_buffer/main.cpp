@@ -23,7 +23,7 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 5.0f));
+Camera camera(glm::vec3(3.0f, 6.0f, 18.0f));
 float lastX = (float)SCR_WIDTH / 2.0;
 float lastY = (float)SCR_HEIGHT / 2.0;
 bool firstMouse = true;
@@ -78,15 +78,15 @@ int main() {
   // -----------
   Model nanosuit("nanosuit/nanosuit.obj");
   std::vector<glm::vec3> objectPositions;
-  objectPositions.push_back(glm::vec3(-3.0, -0.5, -3.0));
-  objectPositions.push_back(glm::vec3(0.0, -0.5, -3.0));
-  objectPositions.push_back(glm::vec3(3.0, -0.5, -3.0));
-  objectPositions.push_back(glm::vec3(-3.0, -0.5, 0.0));
+  objectPositions.push_back(glm::vec3(-5.0, -0.5, -5.0));
+  objectPositions.push_back(glm::vec3(0.0, -0.5, -5.0));
+  objectPositions.push_back(glm::vec3(5.0, -0.5, -5.0));
+  objectPositions.push_back(glm::vec3(-5.0, -0.5, 0.0));
   objectPositions.push_back(glm::vec3(0.0, -0.5, 0.0));
-  objectPositions.push_back(glm::vec3(3.0, -0.5, 0.0));
-  objectPositions.push_back(glm::vec3(-3.0, -0.5, 3.0));
-  objectPositions.push_back(glm::vec3(0.0, -0.5, 3.0));
-  objectPositions.push_back(glm::vec3(3.0, -0.5, 3.0));
+  objectPositions.push_back(glm::vec3(5.0, -0.5, 0.0));
+  objectPositions.push_back(glm::vec3(-5.0, -0.5, 5.0));
+  objectPositions.push_back(glm::vec3(0.0, -0.5, 5.0));
+  objectPositions.push_back(glm::vec3(5.0, -0.5, 5.0));
 
   // configure g-buffer framebuffer
   // ------------------------------
@@ -148,14 +148,10 @@ int main() {
     lightColors.push_back(glm::vec3(rColor, gColor, bColor));
   }
 
-  shader.use();
-  shader.set_int("gPosition", 0);
-  shader.set_int("gNormal", 1);
-  shader.set_int("gAlbedoSpec", 2);
-
   debugShader.use();
   debugShader.set_int("gPosition", 0);
   debugShader.set_int("gNormal", 1);
+  debugShader.set_int("gAlbedoSpec", 2);
 
   // render loop
   // -----------
@@ -201,12 +197,15 @@ int main() {
     // show position/normal/albedospec color buffer
     // glDisable(GL_DEPTH_TEST);
     debugShader.use();
-    glViewport(0, 0, SCR_WIDTH / 2, SCR_HEIGHT / 2);
     glActiveTexture(GL_TEXTURE0);
+    glViewport(0, SCR_HEIGHT / 2, SCR_WIDTH / 2, SCR_HEIGHT / 2);
     glBindTexture(GL_TEXTURE_2D, gPosition);
     renderQuad();
-    glViewport(SCR_WIDTH / 2, 0, SCR_WIDTH / 2, SCR_HEIGHT / 2);
+    glViewport(SCR_WIDTH / 2, SCR_HEIGHT / 2, SCR_WIDTH / 2, SCR_HEIGHT / 2);
     glBindTexture(GL_TEXTURE_2D, gNormal);
+    renderQuad();
+    glViewport(0, 0, SCR_WIDTH / 2, SCR_HEIGHT / 2);
+    glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
     renderQuad();
     glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 
