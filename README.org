@@ -1393,7 +1393,7 @@ PCF（ ~percentage-closer filtering~ ），这是一种多个不同过滤方式�
 
 * <2024-11-07 周四> 高级光照.延迟着色法（一）
 
-** ~G~ 缓冲
+** <2024-11-07 周四> ~G~ 缓冲（一）
 
 从文章了解到 ~G~ 缓冲可以包括如下几个颜色缓冲：
 
@@ -1469,3 +1469,15 @@ PCF（ ~percentage-closer filtering~ ），这是一种多个不同过滤方式�
 
 #+ATTR_HTML: :width 60%
 [[file:files/20241107_1.png]]
+
+** <2024-11-10 周日> ~G~ 缓冲（二）
+
+原来只需要在上节代码中把 ~debugShader~ 的 ~glActiveTexture(GL_TEXTURE1);~ 这行代码删除即可：
+
+#+ATTR_HTML: :width 60%
+[[file:files/20241110_0.png]]
+
+解析如下：
+
+1. ~deubgShader~ 的 ~GL_TEXTURE0~ 本就可以代表整个窗口的纹理。
+2. 所有的绘制不能再绘制到第二个纹理中了，比如上节代码中的多增加的这个 ~GL_TEXTURE1~ 纹理就导致了没有效果。

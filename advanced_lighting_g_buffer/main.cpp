@@ -206,7 +206,6 @@ int main() {
     glBindTexture(GL_TEXTURE_2D, gPosition);
     renderQuad();
     glViewport(SCR_WIDTH / 2, 0, SCR_WIDTH / 2, SCR_HEIGHT / 2);
-    glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, gNormal);
     renderQuad();
     glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
