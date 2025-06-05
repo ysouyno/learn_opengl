@@ -1495,3 +1495,50 @@ PCF（ ~percentage-closer filtering~ ），这是一种多个不同过滤方式�
 
 #+ATTR_HTML: :width 60%
 [[file:files/20241110_2.png]]
+
+* <2025-06-05 周四> 复习（三）
+
+** 第一章，《你好，三角形》
+
+可能现在我才真正理解 ~VAO~ 和 ~VBO~ 的意思：
+
++ ~VBO~ ：只是一段内存，有五个 ~float~ 值，但是它不知道前三个表示 ~xyz~ 坐标，后两个表示纹理 ~xy~ 坐标。
++ ~VAO~ ：知道这个 ~VBO~ 中前三个表示 ~xyz~ 坐标，后两个表示纹理 ~xy~ 坐标。即 ~VAO~ 中存储这些 ~VBO~ 的“顶点属性配置”。
+
+书中有如下一段：
+
+> 当目标是 ~GL_ELEMENT_ARRAY_BUFFER~ 的时候， ~VAO~ 会储存 ~glBindBuffer~ 的函数调用。这也意味着它也会储存解绑调用，所以确保你没有在解绑 ~VAO~ 之前解绑索引数组缓冲，否则它就没有这个 ~EBO~ 配置了。
+
+#+begin_src c++
+  unsigned int VBO, VAO, EBO;
+  glGenVertexArrays(1, &VAO);
+  glGenBuffers(1, &VBO);
+  glGenBuffers(1, &EBO);
+  // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+  glBindVertexArray(VAO);
+
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
+
+  // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex
+  // buffer object so afterwards we can safely unbind
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  // remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep
+  // the EBO bound.
+  // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+  // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens.
+  // Modifying other
+  // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not
+  // directly necessary.
+  glBindVertexArray(0);
+#+end_src
+
+见上面代码中的 ~// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);~ ，所以基本上永远也不应该写上这行代码才对！
