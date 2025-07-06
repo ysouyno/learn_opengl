@@ -69,6 +69,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_lighting_bloom", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_lighting_g_buffer", "advanced_lighting_g_buffer\advanced_lighting_g_buffer.vcxproj", "{22AFD819-A1AE-408D-83CE-E26F30731224}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "advanced_opengl_blending_discard", "advanced_opengl_blending_discard\advanced_opengl_blending_discard.vcxproj", "{7B7A085D-0BA8-42C4-93CB-C0DCE72C95DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -207,6 +209,10 @@ Global
 		{22AFD819-A1AE-408D-83CE-E26F30731224}.Debug|Win32.Build.0 = Debug|Win32
 		{22AFD819-A1AE-408D-83CE-E26F30731224}.Release|Win32.ActiveCfg = Release|Win32
 		{22AFD819-A1AE-408D-83CE-E26F30731224}.Release|Win32.Build.0 = Release|Win32
+		{7B7A085D-0BA8-42C4-93CB-C0DCE72C95DD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7B7A085D-0BA8-42C4-93CB-C0DCE72C95DD}.Debug|Win32.Build.0 = Debug|Win32
+		{7B7A085D-0BA8-42C4-93CB-C0DCE72C95DD}.Release|Win32.ActiveCfg = Release|Win32
+		{7B7A085D-0BA8-42C4-93CB-C0DCE72C95DD}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
